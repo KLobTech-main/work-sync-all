@@ -8,8 +8,8 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
-import InnerSidbar from "../../Layout/InnerSidbar";
-import Profile from "../../Layout/Profile";
+import InnerSidbar from "../../../components/Layout/InnerSidbar";
+import Profile from "../../../components/Layout/Profile";
 import axios from "axios";
 
 function Address() {

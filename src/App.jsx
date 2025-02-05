@@ -7,45 +7,45 @@ import {
 import { useState, useEffect } from "react";
 import Sidebar from "./components/Layout/Sidebar";
 import Navbar from "./components/Layout/Navbar";
-import AdminSidebar from "./components/AdminSidebar"; // Import Admin Sidebar
-import AdminNavbar from "./components/AdminNavbar"; // Import Admin Navbar
+import AdminSidebar from "./components/Layout/AdminSidebar.jsx"; // Import Admin Sidebar
+import AdminNavbar from "./components/Layout/AdminNavbar.jsx"; // Import Admin Navbar
 import LoginForm from "./components/Forms/LoginForm";
 import Dashboard from "./components/Layout/Dashboard";
 import RegisterForm from "./components/Forms/RegisterForm";
-import JobDesk from "./components/Pages/JobDesk";
-import LeaveAllowance from "./components/Pages/JobDesk/LeaveAllowance";
-import Documents from "./components/Pages/JobDesk/Documents";
-import Assets from "./components/Pages/JobDesk/Assets";
-import SalaryOverview from "./components/Pages/JobDesk/SalaryOverview";
-import PayrunAndBadge from "./components/Pages/JobDesk/PayrunAndBadge";
-import PaySlip from "./components/Pages/JobDesk/PaySlip";
-import BankDetail from "./components/Pages/JobDesk/BankDetail";
-import Address from "./components/Pages/JobDesk/Address";
-import Emergency from "./components/Pages/JobDesk/Emergency";
-import LeaveRequest from "./components/Pages/Leave/LeaveRequest";
-import LeaveSummary from "./components/Pages/Leave/LeaveSummary";
-import AttendanceDailyLog from "./components/Pages/Attendance/AttendanceDailyLog";
-import AttendanceRequest from "./components/Pages/Attendance/AttendanceRequest";
-import AttendanceSummary from "./components/Pages/Attendance/AttendanceSummary";
-import Holidays from "./components/Pages/Leave/Holidays";
-import JobHistory from "./components/Pages/JobDesk/JobHistory";
-import Meetings from "./components/Pages/Meetings";
-import Tickets from "./components/Pages/Tickets";
-import Task from "./components/Pages/Task";
+import JobDesk from "./pages/Employee/JobDesk";
+import LeaveAllowance from "./pages/Employee/JobDesk/LeaveAllowance";
+import Documents from "./pages/Employee/JobDesk/Documents";
+import Assets from "./pages/Employee/JobDesk/Assets";
+import SalaryOverview from "./pages/Employee/JobDesk/SalaryOverview";
+import PayrunAndBadge from "./pages/Employee/JobDesk/PayrunAndBadge";
+import PaySlip from "./pages/Employee/JobDesk/PaySlip";
+import BankDetail from "./pages/Employee/JobDesk/BankDetail";
+import Address from "./pages/Employee/JobDesk/Address";
+import Emergency from "./pages/Employee/JobDesk/Emergency";
+import LeaveRequest from "./pages/Employee/Leave/LeaveRequest.jsx";
+import LeaveSummary from "./pages/Employee/Leave/LeaveSummary.jsx";
+import AttendanceDailyLog from "./pages/Employee/Attendance/AttendanceDailyLog";
+import AttendanceRequest from "./pages/Employee/Attendance/AttendanceRequest";
+import AttendanceSummary from "./pages/Employee/Attendance/AttendanceSummary";
+import Holidays from "./pages/Employee/Leave/Holidays";
+import JobHistory from "./pages/Employee/JobDesk/JobHistory";
+import Meetings from "./pages/Employee/Meetings";
+import Tickets from "./pages/Employee/Tickets";
+import Task from "./pages/Employee/Task";
 import PrivateRoute from "./components/PrivateRoute";
-import LeaveRequestCancel from "./components/Pages/Leave/LeaveRequestCancel";
-import Register from "./pages/Register.jsx";
-import Login from "./pages/Login.jsx";
-import EmployeeDetails from "./pages/EmployeeDetail.jsx";
-import LeavePage from "./pages/EmployeeDetails/LeavePage.jsx";
-import TaskPage from "./pages/EmployeeDetails/TaskPage.jsx";
-import AttendancePage from "./pages/EmployeeDetails/AttendancePage.jsx";
-import SubAdminDetails from "./pages/SubAdminDetail.jsx";
-import SubAdminLeave from "./pages/SubAdminDetails/SubAdminLeave.jsx";
-import SubAdminAttendance from "./pages/SubAdminDetails/SubAdminAttendance.jsx";
-import Meeting from "./pages/Meeting.jsx";
-import Ticket from "./pages/Ticket.jsx";
-import AnnouncementForm from "./pages/AnnouncementForm.jsx";
+import LeaveRequestCancel from "./pages/Employee/Leave/LeaveRequestCancel";
+import Register from "./pages/Admin/Register.jsx";
+import Login from "./pages/Admin/Login.jsx";
+import EmployeeDetails from "./pages/Admin/EmployeeDetail.jsx";
+import LeavePage from "./pages/Admin/EmployeeDetails/LeavePage.jsx";
+import TaskPage from "./pages/Admin/EmployeeDetails/TaskPage.jsx";
+import AttendancePage from "./pages/Admin/EmployeeDetails/AttendancePage.jsx";
+import SubAdminDetails from "./pages/Admin/SubAdminDetail.jsx";
+import SubAdminLeave from "./pages/Admin/SubAdminDetails/SubAdminLeave.jsx";
+import SubAdminAttendance from "./pages/Admin/SubAdminDetails/SubAdminAttendance.jsx";
+import Meeting from "./pages/Admin/Meeting.jsx";
+import Ticket from "./pages/Admin/Ticket.jsx";
+import AnnouncementForm from "./pages/Admin/AnnouncementForm.jsx";
 import GeolocationPopup from "./components/GeolocationPopup.jsx"; // New Component
 
 const allowedArea = {

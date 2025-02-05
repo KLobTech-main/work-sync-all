@@ -4,8 +4,8 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import InnerSidbar from "../Layout/InnerSidbar";
-import Profile from "../Layout/Profile";
+import InnerSidbar from "../../components/Layout/InnerSidbar";
+import Profile from "../../components/Layout/Profile";
 import LeaveAllowance from "./JobDesk/LeaveAllowance";
 function JobDesk() {
   const [anchorEl, setAnchorEl] = useState(null);

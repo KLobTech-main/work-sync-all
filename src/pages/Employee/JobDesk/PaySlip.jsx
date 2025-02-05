@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 import axios from "axios";
-import InnerSidebar from "../../Layout/InnerSidbar";
-import Profile from "../../Layout/Profile";
+import InnerSidebar from "../../../components/Layout/InnerSidbar";
+import Profile from "../../../components/Layout/Profile";
 
 function PaySlip() {
   const [payslipData, setPayslipData] = useState([]);

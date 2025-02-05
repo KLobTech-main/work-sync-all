@@ -1,8 +1,8 @@
 import React from "react";
 import { Typography, Paper, Box } from "@mui/material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import InnerSidbar from '../../Layout/InnerSidbar';
-import Profile from '../../Layout/Profile';
+import InnerSidbar from '../../../components/Layout/InnerSidbar';
+import Profile from '../../../components/Layout/Profile';
 import { useState, useEffect } from "react";
 import axios from "axios";
 function SalaryOverview() {

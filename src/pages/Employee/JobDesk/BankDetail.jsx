@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import InnerSidbar from "../../Layout/InnerSidbar";
-import Profile from "../../Layout/Profile";
+import InnerSidbar from "../../../components/Layout/InnerSidbar";
+import Profile from "../../../components/Layout/Profile";
 import {
   Button,
   Dialog,

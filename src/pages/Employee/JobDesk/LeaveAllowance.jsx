@@ -1,6 +1,6 @@
 import React from 'react';
-import InnerSidbar from '../../Layout/InnerSidbar';
-import Profile from '../../Layout/Profile';
+import InnerSidbar from '../../../components/Layout/InnerSidbar';
+import Profile from '../../../components/Layout/Profile';
 import { Box, Typography, Paper, Grid } from '@mui/material';
 
 function LeaveAllowance() {
