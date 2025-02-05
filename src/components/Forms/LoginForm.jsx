@@ -54,7 +54,7 @@ const LoginForm = () => {
         localStorage.setItem('email', user.email); 
 
         setSnackbar({ open: true, message: 'Login successful! Redirecting...', severity: 'success' });
-        setTimeout(() => navigate('/'), 2000);
+        setTimeout(() => navigate('/'));
       }
     } catch (error) {
       setLoading(false);

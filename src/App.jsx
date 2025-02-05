@@ -1,7 +1,14 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
 import Sidebar from "./components/Layout/Sidebar";
 import Navbar from "./components/Layout/Navbar";
+import AdminSidebar from "./components/AdminSidebar"; // Import Admin Sidebar
+import AdminNavbar from "./components/AdminNavbar"; // Import Admin Navbar
 import LoginForm from "./components/Forms/LoginForm";
 import Dashboard from "./components/Layout/Dashboard";
 import RegisterForm from "./components/Forms/RegisterForm";
@@ -27,12 +34,24 @@ import Tickets from "./components/Pages/Tickets";
 import Task from "./components/Pages/Task";
 import PrivateRoute from "./components/PrivateRoute";
 import LeaveRequestCancel from "./components/Pages/Leave/LeaveRequestCancel";
+import Register from "./pages/Register.jsx";
+import Login from "./pages/Login.jsx";
+import EmployeeDetails from "./pages/EmployeeDetail.jsx";
+import LeavePage from "./pages/EmployeeDetails/LeavePage.jsx";
+import TaskPage from "./pages/EmployeeDetails/TaskPage.jsx";
+import AttendancePage from "./pages/EmployeeDetails/AttendancePage.jsx";
+import SubAdminDetails from "./pages/SubAdminDetail.jsx";
+import SubAdminLeave from "./pages/SubAdminDetails/SubAdminLeave.jsx";
+import SubAdminAttendance from "./pages/SubAdminDetails/SubAdminAttendance.jsx";
+import Meeting from "./pages/Meeting.jsx";
+import Ticket from "./pages/Ticket.jsx";
+import AnnouncementForm from "./pages/AnnouncementForm.jsx";
 import GeolocationPopup from "./components/GeolocationPopup.jsx"; // New Component
 
 const allowedArea = {
-  latitude: 26.8718,  
+  latitude: 26.8718,
   longitude: 75.7758,
-  radius: 5000, 
+  radius: 5000,
 };
 
 const App = () => {
@@ -48,7 +67,10 @@ const Main = () => {
   const [isWithinArea, setIsWithinArea] = useState(true);
   const location = useLocation();
 
-  const isAuthRoute = location.pathname === "/login" || location.pathname === "/register";
+  const isAuthRoute = ["/login", "/register", "/admin/login", "/admin/register"].includes(location.pathname);
+
+  // Check if the current route is an admin route
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   useEffect(() => {
     // Geolocation API to check user's position
@@ -100,18 +122,135 @@ const Main = () => {
     return <GeolocationPopup />;
   }
 
+  const AdminPrivateRoute = ({ children }) => {
+    const isAuthenticated = Boolean(localStorage.getItem("token")); // Use your authentication logic
+    return isAuthenticated ? children : <Navigate to="/admin/login" />;
+  };
+
   return (
     <div>
-      {!isAuthRoute && <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />}
+      {/* Render Admin Navbar for admin routes, otherwise render Employee Navbar */}
+      {!isAuthRoute &&
+        (isAdminRoute == true ? (
+          <AdminNavbar darkMode={darkMode} setDarkMode={setDarkMode} />
+        ) : (
+          <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+        ))}
+
       <div style={{ display: "flex" }}>
-        {!isAuthRoute && <Sidebar />}
-        <div style={{ flexGrow: 1, padding: "-1px" }}>
+        {/* Render Admin Sidebar for admin routes, otherwise render Employee Sidebar */}
+        {!isAuthRoute &&
+          (isAdminRoute == true ? (
+            <AdminSidebar />
+          ) : (
+            <Sidebar />
+          ))}
+
+        <div style={{ flexGrow: 1, padding: "1px" }}>
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
+            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin/register" element={<Register />} />
 
             {/* Protected Routes */}
+            <Route
+              path="/admin/employee-details"
+              element={
+                <AdminPrivateRoute>
+                  <EmployeeDetails />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/employee/:id/leave"
+              element={
+                <AdminPrivateRoute>
+                  <LeavePage />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/employee/:id/task"
+              element={
+                <AdminPrivateRoute>
+                  <TaskPage />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/employee/:id/attendance"
+              element={
+                <AdminPrivateRoute>
+                  <AttendancePage />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/subadmin-details"
+              element={
+                <AdminPrivateRoute>
+                  <SubAdminDetails />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/subadmin/:id/leave"
+              element={
+                <AdminPrivateRoute>
+                  <SubAdminLeave />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/subadmin/:email/attendance"
+              element={
+                <AdminPrivateRoute>
+                  <SubAdminAttendance />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/meetings"
+              element={
+                <AdminPrivateRoute>
+                  <Meeting />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/tasks"
+              element={
+                <AdminPrivateRoute>
+                  <Task />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/tickets"
+              element={
+                <AdminPrivateRoute>
+                  <Ticket />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/announcement"
+              element={
+                <AdminPrivateRoute>
+                  <AnnouncementForm />
+                </AdminPrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/leave-request"
+              element={
+                <AdminPrivateRoute>
+                  <LeaveRequest />
+                </AdminPrivateRoute>
+              }
+            />
             <Route
               path="/"
               element={
