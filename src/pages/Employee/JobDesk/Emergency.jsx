@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
-import InnerSidbar from "../../../components/Layout/InnerSidbar";
-import Profile from "../../../components/Layout/Profile";
+import InnerSidbar from "../../../components/Layout/EmployeeLayout/InnerSidbar";
+import Profile from "../../../components/Layout/EmployeeLayout/Profile";
 import axios from "axios";
 
 function Emergency() {

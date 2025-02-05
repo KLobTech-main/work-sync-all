@@ -1,6 +1,6 @@
 import React from "react";
-import InnerSidbar from "../../../components/Layout/InnerSidbar";
-import Profile from "../../../components/Layout/Profile";
+import InnerSidbar from "../../../components/Layout/EmployeeLayout/InnerSidbar";
+import Profile from "../../../components/Layout/EmployeeLayout/Profile";
 import { Box, Typography, Divider } from "@mui/material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import AddIcon from "@mui/icons-material/Add";

@@ -5,12 +5,12 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Sidebar from "./components/Layout/Sidebar";
-import Navbar from "./components/Layout/Navbar";
-import AdminSidebar from "./components/Layout/AdminSidebar.jsx"; // Import Admin Sidebar
-import AdminNavbar from "./components/Layout/AdminNavbar.jsx"; // Import Admin Navbar
+import Sidebar from "./components/Layout/EmployeeLayout/Sidebar.jsx";
+import Navbar from "./components/Layout/EmployeeLayout/Navbar.jsx";
+import AdminSidebar from "./components/Layout/AdminLayout/AdminSidebar.jsx"; // Import Admin Sidebar
+import AdminNavbar from "./components/Layout/AdminLayout/AdminNavbar.jsx"; // Import Admin Navbar
 import LoginForm from "./components/Forms/LoginForm";
-import Dashboard from "./components/Layout/Dashboard";
+import Dashboard from "./components/Layout/EmployeeLayout/Dashboard.jsx";
 import RegisterForm from "./components/Forms/RegisterForm";
 import JobDesk from "./pages/Employee/JobDesk";
 import LeaveAllowance from "./pages/Employee/JobDesk/LeaveAllowance";

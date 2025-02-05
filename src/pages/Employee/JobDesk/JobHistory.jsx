@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Profile from "../../../components/Layout/Profile";
-import InnerSidbar from "../../../components/Layout/InnerSidbar";
+import Profile from "../../../components/Layout/EmployeeLayout/Profile";
+import InnerSidbar from "../../../components/Layout/EmployeeLayout/InnerSidbar";
 import {
   Typography,
   Paper,

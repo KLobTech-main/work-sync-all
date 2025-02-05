@@ -15,8 +15,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import Profile from '../../../components/Layout/Profile';
-import InnerSidbar from '../../../components/Layout/InnerSidbar';
+import Profile from '../../../components/Layout/EmployeeLayout/Profile';
+import InnerSidbar from '../../../components/Layout/EmployeeLayout/InnerSidbar';
 import axios from 'axios';
 
 function Assets() {
