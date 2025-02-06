@@ -34,7 +34,7 @@ const Task = () => {
         setLoading(true);
         setSnackbarOpen(true);
         const token = localStorage.getItem("token");
-        const adminEmail = "example@company.com"; // Retrieve email from localStorage
+        const adminEmail = localStorage.getItem("email"); // Retrieve email from localStorage
 
         const response = await axios.get(
           `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/all?adminEmail=${adminEmail}`,

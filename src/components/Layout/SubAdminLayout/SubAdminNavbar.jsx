@@ -6,7 +6,7 @@ const Navbar = () => {
     <AppBar  position="sticky">
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Work Sync Admin Panel
+          Work Sync Sub Admin Panel
         </Typography>
       </Toolbar>
     </AppBar>

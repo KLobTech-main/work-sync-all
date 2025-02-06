@@ -31,7 +31,7 @@ const EmployeeDetails = () => {
 
       if (!adminEmail || !authToken || !employeeEmail) {
         setError(
-          "Missing admin email, authentication token, or employee email."
+          "Missing sub admin email, authentication token, or employee email."
         );
         setLoading(false);
         return;

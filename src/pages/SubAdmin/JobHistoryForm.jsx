@@ -42,7 +42,7 @@ const JobHistoryForm = () => {
     const token = localStorage.getItem("token");
 
     if (!adminEmail || !token) {
-      alert("Admin email or token is missing in local storage.");
+      alert("SubAdmin email or token is missing in local storage.");
       return;
     }
 
@@ -75,7 +75,7 @@ const JobHistoryForm = () => {
         }
       );
       alert("Job history successfully submitted!");
-      navigate("/admin/jobHistory");
+      navigate("/subadmin/jobHistory");
       console.log(response.data);
     } catch (error) {
       console.error("Error submitting job history:", error);
