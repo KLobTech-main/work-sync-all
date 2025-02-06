@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Sidebar from "./components/Layout/EmployeeLayout/Sidebar.jsx";
@@ -38,7 +39,6 @@ import Task from "./pages/Employee/Task";
 import PrivateRoute from "./components/PrivateRoute";
 import LeaveRequestCancel from "./pages/Employee/Leave/LeaveRequestCancel";
 // Import Admin Pages
-import Register from "./pages/Admin/Register.jsx";
 import Login from "./pages/Admin/Login.jsx";
 import EmployeeDetails from "./pages/Admin/EmployeeDetail.jsx";
 import LeavePage from "./pages/Admin/EmployeeDetails/LeavePage.jsx";

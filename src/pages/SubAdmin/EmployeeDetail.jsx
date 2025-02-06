@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Paper,
   Table,
@@ -18,7 +18,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +34,7 @@ const EmployeeDetails = () => {
   const [editEmployee, setEditEmployee] = useState(null);
   const [showAllInfoDialogOpen, setShowAllInfoDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [setSnackbarOpen] = useState(false);
   const [isSalaryDialogOpen, setSalaryDialogOpen] = useState(false);
   const [newSalary, setNewSalary] = useState("");
 
@@ -84,7 +83,7 @@ const EmployeeDetails = () => {
     };
 
     fetchEmployees();
-  }, []);
+  }, [setSnackbarOpen]);
 
   const handleClick = (event, employee) => {
     setAnchorEl(event.currentTarget);

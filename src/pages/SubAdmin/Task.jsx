@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Paper,
@@ -46,7 +46,7 @@ const Task = () => {
         );
 
         setTasks(response.data); // Update tasks state
-      } catch (err) {
+      } catch {
         setError("Failed to fetch tasks. Please try again."); // Handle errors
       } finally {
         setLoading(false);

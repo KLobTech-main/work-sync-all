@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Paper,
@@ -49,7 +49,7 @@ const EmployeeDetails = () => {
           },
         });
         setLeaves(response.data);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch leave data. Please try again later.");
       } finally {
         setLoading(false);
@@ -57,7 +57,7 @@ const EmployeeDetails = () => {
     };
 
     fetchLeaves();
-  }, []);
+  }, [employee.email]);
 
   const filteredLeaves = leaves.filter((leave) =>
     leave.name.toLowerCase().includes(search.toLowerCase())

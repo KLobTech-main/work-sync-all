@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Box,
@@ -9,9 +9,6 @@ import {
   Select,
   MenuItem,
   Typography,
-  Card,
-  CardContent,
-  CardActions,
 } from "@mui/material";
 
 const AnnouncementForm = () => {
@@ -19,7 +16,6 @@ const AnnouncementForm = () => {
   const [message, setMessage] = useState("");
   const [recipient, setRecipient] = useState("");
   const [employeeEmails, setEmployeeEmails] = useState([]);
-  const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleTitleChange = (e) => setTitle(e.target.value);

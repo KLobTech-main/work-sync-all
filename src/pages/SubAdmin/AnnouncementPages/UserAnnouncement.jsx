@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -41,7 +41,7 @@ const UserAnnouncementTable = () => {
           },
         });
         setAnnouncements(response.data);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch announcements. Please try again later.");
       } finally {
         setLoading(false);

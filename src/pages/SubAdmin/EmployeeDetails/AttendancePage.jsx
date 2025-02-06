@@ -68,7 +68,7 @@ const AttendancePage = () => {
           headers: { Authorization: authToken },
         });
         setAttendanceData(response.data);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch attendance data. Please try again later.");
       } finally {
         setLoading(false);
@@ -125,7 +125,7 @@ const AttendancePage = () => {
       <div style={{ flexGrow: 1 }}>
         <div className="flex justify-between py-5">
           <Typography variant="h4" gutterBottom>
-            {employee.name}'s Attendance Details
+            {employee.name}&apos;s Attendance Details
           </Typography>
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
             <TextField
