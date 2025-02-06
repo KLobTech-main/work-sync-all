@@ -29,7 +29,7 @@ const Sidebar = () => {
     localStorage.removeItem('email');
 
     // Redirect to login page
-    navigate('/admin/login');
+    navigate('/admin');
   };
 
   return (
