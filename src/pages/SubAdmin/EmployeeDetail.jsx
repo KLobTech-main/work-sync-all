@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Paper,
   Table,
@@ -18,6 +18,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Grid,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +35,7 @@ const EmployeeDetails = () => {
   const [editEmployee, setEditEmployee] = useState(null);
   const [showAllInfoDialogOpen, setShowAllInfoDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [setSnackbarOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [isSalaryDialogOpen, setSalaryDialogOpen] = useState(false);
   const [newSalary, setNewSalary] = useState("");
 
@@ -49,7 +50,7 @@ const EmployeeDetails = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       const token = localStorage.getItem("token");
-      const email = localStorage.getItem("email");
+      const adminEmail = localStorage.getItem("email");
       // const token =
       //   "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleGFtcGxlQGNvbXBhbnkuY29tIiwiaWF0IjoxNzM1MTkzNDQyLCJleHAiOjE3MzUyMjk0NDJ9.TFMeMTNRUfeqIxxwTgAt-J2PCXXO4nLz22AeS4SsuNg";
 
@@ -57,8 +58,8 @@ const EmployeeDetails = () => {
         setLoading(true);
         setSnackbarOpen(true);
         const response = await fetch(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/get-all-users?adminEmail=${encodeURIComponent(
-            email
+          `http://localhost:8080/admin/api/get-all-users?adminEmail=${encodeURIComponent(
+            adminEmail
           )}`,
           {
             headers: {
@@ -83,7 +84,7 @@ const EmployeeDetails = () => {
     };
 
     fetchEmployees();
-  }, [setSnackbarOpen]);
+  }, []);
 
   const handleClick = (event, employee) => {
     setAnchorEl(event.currentTarget);
