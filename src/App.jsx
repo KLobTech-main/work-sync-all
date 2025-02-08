@@ -3,15 +3,19 @@ import {
   Routes,
   Route,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Sidebar from "./components/Layout/EmployeeLayout/Sidebar.jsx";
 import Navbar from "./components/Layout/EmployeeLayout/Navbar.jsx";
 import AdminSidebar from "./components/Layout/AdminLayout/AdminSidebar.jsx"; // Import Admin Sidebar
 import AdminNavbar from "./components/Layout/AdminLayout/AdminNavbar.jsx"; // Import Admin Navbar
+import SubAdminSidebar from "./components/Layout/SubAdminLayout/SubAdminSidebar.jsx"; // Import SubAdmin Sidebar
+import SubAdminNavbar from "./components/Layout/SubAdminLayout/SubAdminNavbar.jsx"; // Import SubAdmin Navbar
 import LoginForm from "./components/Forms/LoginForm";
 import Dashboard from "./components/Layout/EmployeeLayout/Dashboard.jsx";
 import RegisterForm from "./components/Forms/RegisterForm";
+// Import Employee Pages
 import JobDesk from "./pages/Employee/JobDesk";
 import LeaveAllowance from "./pages/Employee/JobDesk/LeaveAllowance";
 import Documents from "./pages/Employee/JobDesk/Documents";
@@ -34,7 +38,7 @@ import Tickets from "./pages/Employee/Tickets";
 import Task from "./pages/Employee/Task";
 import PrivateRoute from "./components/PrivateRoute";
 import LeaveRequestCancel from "./pages/Employee/Leave/LeaveRequestCancel";
-import Register from "./pages/Admin/Register.jsx";
+// Import Admin Pages
 import Login from "./pages/Admin/Login.jsx";
 import EmployeeDetails from "./pages/Admin/EmployeeDetail.jsx";
 import LeavePage from "./pages/Admin/EmployeeDetails/LeavePage.jsx";
@@ -47,6 +51,27 @@ import Meeting from "./pages/Admin/Meeting.jsx";
 import Ticket from "./pages/Admin/Ticket.jsx";
 import AnnouncementForm from "./pages/Admin/AnnouncementForm.jsx";
 import GeolocationPopup from "./components/GeolocationPopup.jsx"; // New Component
+//Import SubAdmin Pages
+import SubAdminLogin from "./pages/SubAdmin/Login.jsx";
+import SubAdminDashboard from "./pages/SubAdmin/Dashboard.jsx";
+import SubAdminMeeting from "./pages/SubAdmin/Meeting.jsx";
+import SubAdminTicket from "./pages/SubAdmin/Ticket.jsx";
+import SubAdminTask from "./pages/SubAdmin/Task.jsx";
+import SubAdminJobHistory from "./pages/SubAdmin/JobHistory.jsx";
+import SubAdminAnnouncementForm from "./pages/SubAdmin/AnnouncementForm.jsx";
+import SubAdminApproveRequest from "./pages/SubAdmin/ApproveRequest.jsx";
+import SubAdminAssests from "./pages/SubAdmin/Assets.jsx";
+import SubAdminEmployeeDetails from "./pages/SubAdmin/EmployeeDetail.jsx";
+import SubAdminFeedBack from "./pages/SubAdmin/FeedBack.jsx";
+import SubAdminJobHistoryForm from "./pages/SubAdmin/JobHistoryForm.jsx";
+import SubAdminUserLeave from "./pages/SubAdmin/Leave.jsx";
+import SubAdminLeaveUserRequest from "./pages/SubAdmin/LeaveRequest.jsx";
+// import SubAdminAttendancePage from "./pages/SubAdmin/EmployeeDetails/AttendancePage.jsx";
+// import SubAdminLeavePage from "./pages/SubAdmin/EmployeeDetails/LeavePage.jsx";
+// import SubAdminTaskPage from "./pages/SubAdmin/EmployeeDetails/TaskPage.jsx";
+// import SubAdminCreateAnnouncementForm from "./pages/SubAdmin/AnnouncementPages/CreateAnnouncement.jsx";
+import SubAdminAnnouncement from "./pages/SubAdmin/AnnouncementPages/SubAdminAnnouncement.jsx";
+import SubAdminUserAnnouncement from "./pages/SubAdmin/AnnouncementPages/UserAnnouncement.jsx";
 
 const allowedArea = {
   latitude: 26.8718,
@@ -67,10 +92,33 @@ const Main = () => {
   const [isWithinArea, setIsWithinArea] = useState(true);
   const location = useLocation();
 
-  const isAuthRoute = ["/login", "/register", "/admin/login", "/admin/register"].includes(location.pathname);
+  const isAuthRoute = [
+    "/login",
+    "/register",
+    "/admin",
+    "/subadmin",
+  ].includes(location.pathname);
 
-  // Check if the current route is an admin route
   const isAdminRoute = location.pathname.startsWith("/admin");
+
+  const isSubAdminRoute = location.pathname.startsWith("/subadmin");
+
+  // Determine which navbar to render
+  const renderNavbar = () => {
+    if (isAuthRoute) return null;
+    if (isAdminRoute)
+      return <AdminNavbar darkMode={darkMode} setDarkMode={setDarkMode} />;
+    if (isSubAdminRoute)
+      return <SubAdminNavbar darkMode={darkMode} setDarkMode={setDarkMode} />;
+    return <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />;
+  };
+  // Determine which sidebar to render
+  const renderSidebar = () => {
+    if (isAuthRoute) return null;
+    if (isAdminRoute) return <AdminSidebar />;
+    if (isSubAdminRoute) return <SubAdminSidebar />;
+    return <Sidebar />;
+  };
 
   useEffect(() => {
     // Geolocation API to check user's position
@@ -124,37 +172,32 @@ const Main = () => {
 
   const AdminPrivateRoute = ({ children }) => {
     const isAuthenticated = Boolean(localStorage.getItem("token")); // Use your authentication logic
-    return isAuthenticated ? children : <Navigate to="/admin/login" />;
+    return isAuthenticated ? children : <Navigate to="/admin" />;
   };
+
+  // PrivateRoute component
+const SubAdminPrivateRoute = ({ element }) => {
+  const email = localStorage.getItem("email");
+  const token = localStorage.getItem("token");
+
+  // Check for both email and token
+  return email && token ? element : <Navigate to="/subadmin" />;
+};
 
   return (
     <div>
-      {/* Render Admin Navbar for admin routes, otherwise render Employee Navbar */}
-      {!isAuthRoute &&
-        (isAdminRoute == true ? (
-          <AdminNavbar darkMode={darkMode} setDarkMode={setDarkMode} />
-        ) : (
-          <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
-        ))}
-
+      {renderNavbar()}
       <div style={{ display: "flex" }}>
-        {/* Render Admin Sidebar for admin routes, otherwise render Employee Sidebar */}
-        {!isAuthRoute &&
-          (isAdminRoute == true ? (
-            <AdminSidebar />
-          ) : (
-            <Sidebar />
-          ))}
-
+        {renderSidebar()}
         <div style={{ flexGrow: 1, padding: "1px" }}>
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
-            <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin/register" element={<Register />} />
+            <Route path="/admin" element={<Login />} />
+            <Route path="/subadmin" element={<SubAdminLogin />} />
 
-            {/* Protected Routes */}
+            {/* Protected Routes for admin*/}
             <Route
               path="/admin/employee-details"
               element={
@@ -196,7 +239,7 @@ const Main = () => {
               }
             />
             <Route
-              path="/subadmin/:id/leave"
+              path="/admin/:id/leave"
               element={
                 <AdminPrivateRoute>
                   <SubAdminLeave />
@@ -204,7 +247,7 @@ const Main = () => {
               }
             />
             <Route
-              path="/subadmin/:email/attendance"
+              path="/admin/:email/attendance"
               element={
                 <AdminPrivateRoute>
                   <SubAdminAttendance />
@@ -251,6 +294,84 @@ const Main = () => {
                 </AdminPrivateRoute>
               }
             />
+            {/* Private Routes for subadmin*/}
+            <Route
+              path="/subadmin/employee-details"
+              element={<SubAdminPrivateRoute element={<SubAdminEmployeeDetails />} />}
+            />
+            <Route
+              path="/subadmin/employee/:id/leave"
+              element={<SubAdminPrivateRoute element={<SubAdminUserLeave />} />}
+            />
+            <Route
+              path="/subadmin/employee/:id/task"
+              element={<SubAdminPrivateRoute element={<SubAdminTask />} />}
+            />
+            <Route
+              path="/subadmin/employee/:id/attendance"
+              element={<SubAdminPrivateRoute element={<SubAdminAttendance />} />}
+            />
+            <Route
+              path="/subadmin/dashboard"
+              element={<SubAdminPrivateRoute element={<SubAdminDashboard />} />}
+            />
+            <Route
+              path="/subadmin/meetings"
+              element={<SubAdminPrivateRoute element={<SubAdminMeeting />} />}
+            />
+            <Route
+              path="/subadmin/tasks"
+              element={<SubAdminPrivateRoute element={<SubAdminTask />} />}
+            />
+            <Route
+              path="/subadmin/tickets"
+              element={<SubAdminPrivateRoute element={<SubAdminTicket />} />}
+            />
+            <Route
+              path="/subadmin/announcement"
+              element={<SubAdminPrivateRoute element={<SubAdminAnnouncementForm />} />}
+            />
+            <Route
+              path="/subadmin/leave-request"
+              element={<SubAdminPrivateRoute element={<SubAdminLeaveUserRequest />} />}
+            />
+            <Route
+              path="/subadmin/leave"
+              element={<SubAdminPrivateRoute element={<SubAdminLeave />} />}
+            />
+            <Route
+              path="/subadmin/jobHistory"
+              element={<SubAdminPrivateRoute element={<SubAdminJobHistory />} />}
+            />
+            <Route
+              path="/subadmin/jobHistoryForm"
+              element={<SubAdminPrivateRoute element={<SubAdminJobHistoryForm />} />}
+            />
+            <Route
+              path="/subadmin/feedback"
+              element={<SubAdminPrivateRoute element={<SubAdminFeedBack />} />}
+            />
+            <Route
+              path="/subadmin/assets"
+              element={<SubAdminPrivateRoute element={<SubAdminAssests />} />}
+            />
+            <Route
+              path="/subadmin/approve-request"
+              element={<SubAdminPrivateRoute element={<SubAdminApproveRequest />} />}
+            />
+            <Route
+              path="/subadmin/user-announcement"
+              element={<SubAdminPrivateRoute element={<SubAdminUserAnnouncement />} />}
+            />
+            <Route
+              path="/subadmin/subadmin-announcement"
+              element={<SubAdminPrivateRoute element={<SubAdminAnnouncement />} />}
+            />
+            <Route
+              path="/subadmin/create-announcement"
+              element={<SubAdminPrivateRoute element={<SubAdminAnnouncementForm />} />}
+            />
+            {/* Private Routes for employee*/}
             <Route
               path="/"
               element={
