@@ -1,7 +1,7 @@
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
+BrowserRouter as Router,
+Routes,
+Route,
   useLocation,
   Navigate,
 } from "react-router-dom";
@@ -73,11 +73,11 @@ import SubAdminLeaveUserRequest from "./pages/SubAdmin/LeaveRequest.jsx";
 import SubAdminAnnouncement from "./pages/SubAdmin/AnnouncementPages/SubAdminAnnouncement.jsx";
 import SubAdminUserAnnouncement from "./pages/SubAdmin/AnnouncementPages/UserAnnouncement.jsx";
 
-const allowedArea = {
-  latitude: 26.8718,
-  longitude: 75.7758,
-  radius: 5000,
-};
+// const allowedArea = {
+//   latitude: 26.8718,
+//   longitude: 75.7758,
+//   radius: 5000,
+// };
 
 const App = () => {
   return (
@@ -120,55 +120,55 @@ const Main = () => {
     return <Sidebar />;
   };
 
-  useEffect(() => {
-    // Geolocation API to check user's position
-    const checkLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            const distance = calculateDistance(
-              latitude,
-              longitude,
-              allowedArea.latitude,
-              allowedArea.longitude
-            );
-            setIsWithinArea(distance <= allowedArea.radius);
-          },
-          (error) => {
-            console.error("Geolocation error:", error);
-            setIsWithinArea(false);
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-        setIsWithinArea(false);
-      }
-    };
+  // useEffect(() => {
+  //   // Geolocation API to check user's position
+  //   const checkLocation = () => {
+  //     if (navigator.geolocation) {
+  //       navigator.geolocation.getCurrentPosition(
+  //         (position) => {
+  //           const { latitude, longitude } = position.coords;
+  //           const distance = calculateDistance(
+  //             latitude,
+  //             longitude,
+  //             allowedArea.latitude,
+  //             allowedArea.longitude
+  //           );
+  //           setIsWithinArea(distance <= allowedArea.radius);
+  //         },
+  //         (error) => {
+  //           console.error("Geolocation error:", error);
+  //           setIsWithinArea(false);
+  //         }
+  //       );
+  //     } else {
+  //       console.error("Geolocation is not supported by this browser.");
+  //       setIsWithinArea(false);
+  //     }
+  //   };
 
-    checkLocation();
-  }, []);
+  //   checkLocation();
+  // }, []);
 
-  // Haversine formula to calculate the distance between two lat/lon points
-  const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const toRadians = (degree) => (degree * Math.PI) / 180;
-    const R = 6371e3; // Earth's radius in meters
-    const φ1 = toRadians(lat1);
-    const φ2 = toRadians(lat2);
-    const Δφ = toRadians(lat2 - lat1);
-    const Δλ = toRadians(lon2 - lon1);
+  // // Haversine formula to calculate the distance between two lat/lon points
+  // const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  //   const toRadians = (degree) => (degree * Math.PI) / 180;
+  //   const R = 6371e3; // Earth's radius in meters
+  //   const φ1 = toRadians(lat1);
+  //   const φ2 = toRadians(lat2);
+  //   const Δφ = toRadians(lat2 - lat1);
+  //   const Δλ = toRadians(lon2 - lon1);
 
-    const a =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  //   const a =
+  //     Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+  //     Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return R * c; // Distance in meters
-  };
+  //   return R * c; // Distance in meters
+  // };
 
-  if (!isWithinArea) {
-    return <GeolocationPopup />;
-  }
+  // if (!isWithinArea) {
+  //   return <GeolocationPopup />;
+  // }
 
   const AdminPrivateRoute = ({ children }) => {
     const isAuthenticated = Boolean(localStorage.getItem("token")); // Use your authentication logic

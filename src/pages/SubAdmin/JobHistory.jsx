@@ -28,18 +28,16 @@ const JobHistory = () => {
 
   useEffect(() => {
     const fetchJobHistory = async () => {
-      const token = localStorage.getItem("token");
-      const adminEmail = localStorage.getItem("email");
+      const token = localStorage.getItem("token") || "";
+      const adminEmail = localStorage.getItem("email") || "";
 
       try {
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/jobHistory/all`,
+          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-jobHistory`,
           {
-            params: {
-              adminEmail: adminEmail, // Get email from local storage
-            },
+            params: { subAdminEmail: adminEmail },
             headers: {
-              Authorization: token, // Pass token from local storage for authentication
+              Authorization: token,
               "Content-Type": "application/json",
             },
           }
@@ -47,8 +45,8 @@ const JobHistory = () => {
 
         console.log("API Response:", response.data);
 
-        if (response.status === 200) {
-          setJobHistory(response.data);
+        if (response.status === 200 && response.data.data) {
+          setJobHistory(response.data.data); // ✅ Extract the `data` array correctly
         } else {
           console.error("Error fetching job history");
         }
@@ -64,41 +62,36 @@ const JobHistory = () => {
 
   // Function to toggle sort order
   const handleSort = () => {
-    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
-    setSortOrder(newSortOrder);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  // Sorting function based on joiningDate
-  const sortedJobHistory = [...jobHistory]
+  // Sorting and Filtering Job History
+  const sortedJobHistory = [...(jobHistory || [])]
     .sort((a, b) => {
       const dateA = new Date(a.joiningDate);
       const dateB = new Date(b.joiningDate);
-
-      if (sortOrder === "asc") {
-        return dateA - dateB;
-      } else {
-        return dateB - dateA;
-      }
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     })
-    // Filter by name and profile
     .filter((job) => {
       const nameMatch = job.name
         .toLowerCase()
         .includes(searchName.toLowerCase());
-      const profileMatch = job.workShift.profile
-        .toLowerCase()
-        .includes(searchProfile.toLowerCase());
+
+      const profileMatch = job.workShift?.profile
+        ?.toLowerCase()
+        .includes(searchProfile.toLowerCase()) || false;
+
       return nameMatch && profileMatch;
     });
 
   return (
     <div>
-      {/* Flex container for heading and search inputs */}
+      {/* Header & Search Inputs */}
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between", // Spacing between heading and search section
-          alignItems: "center", // Align both vertically
+          justifyContent: "space-between",
+          alignItems: "center",
           padding: 2,
         }}
       >
@@ -111,7 +104,7 @@ const JobHistory = () => {
           sx={{
             display: "flex",
             gap: 2,
-            alignItems: "center", // Align inputs vertically in the middle
+            alignItems: "center",
           }}
         >
           <TextField
@@ -119,7 +112,7 @@ const JobHistory = () => {
             variant="outlined"
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
-            sx={{ width: "300px" }} // Set width for better visibility
+            sx={{ width: "300px" }}
           />
           <FormControl variant="outlined" sx={{ width: "300px" }}>
             <InputLabel>Profile</InputLabel>
@@ -143,6 +136,7 @@ const JobHistory = () => {
         </Box>
       </Box>
 
+      {/* Loading Indicator */}
       {loading ? (
         <Typography variant="h6" align="center">
           Loading job history...
@@ -163,15 +157,11 @@ const JobHistory = () => {
                     <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
                     <TableCell
                       style={{ fontWeight: "bold", cursor: "pointer" }}
-                      onClick={handleSort} // Toggle sort order on click
+                      onClick={handleSort}
                     >
                       Joining Date
                       <IconButton size="small">
-                        {sortOrder === "asc" ? (
-                          <ArrowUpward />
-                        ) : (
-                          <ArrowDownward />
-                        )}
+                        {sortOrder === "asc" ? <ArrowUpward /> : <ArrowDownward />}
                       </IconButton>
                     </TableCell>
                     <TableCell style={{ fontWeight: "bold" }}>
@@ -186,17 +176,25 @@ const JobHistory = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {sortedJobHistory.map((job, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{job.email}</TableCell>
-                      <TableCell>{job.name}</TableCell>
-                      <TableCell>{job.designation}</TableCell>
-                      <TableCell>{job.joiningDate}</TableCell>
-                      <TableCell>{job.department}</TableCell>
-                      <TableCell>{job.workShift.profile}</TableCell>
-                      <TableCell>{job.workShift.shiftType}</TableCell>
+                  {sortedJobHistory.length > 0 ? (
+                    sortedJobHistory.map((job, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{job.email}</TableCell>
+                        <TableCell>{job.name}</TableCell>
+                        <TableCell>{job.designation}</TableCell>
+                        <TableCell>{job.joiningDate}</TableCell>
+                        <TableCell>{job.department}</TableCell>
+                        <TableCell>{job.workShift?.profile || "N/A"}</TableCell>
+                        <TableCell>{job.workShift?.shiftType || "N/A"}</TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7} align="center">
+                        No job history found.
+                      </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

@@ -21,32 +21,34 @@ const Meeting = () => {
   const [searchDate, setSearchDate] = useState(""); // State for date filter
   const [page, setPage] = useState(0); // Current page
   const [rowsPerPage, setRowsPerPage] = useState(10); // Rows per page
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Fetch meetings data
   useEffect(() => {
     const fetchMeetings = async () => {
-      // const email = localStorage.getItem("email");
       const token = localStorage.getItem("token");
-      const email = "example@company.com";
-      // const token =
-      //   "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleGFtcGxlQGNvbXBhbnkuY29tIiwiaWF0IjoxNzM1MTkzNDQyLCJleHAiOjE3MzUyMjk0NDJ9.TFMeMTNRUfeqIxxwTgAt-J2PCXXO4nLz22AeS4SsuNg";
 
       try {
         setLoading(true);
         setSnackbarOpen(true);
+
         const response = await axios.get(
-          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/meetings/get-all",
+          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-meetings`,
           {
             headers: {
               Authorization: token,
             },
-            params: {
-              adminEmail: email,
-            },
           }
         );
 
-        setMeetings(response.data);
+        console.log("API Response:", response); // Debugging log
+
+        if (response.status === 204 || !response.data) {
+          setMeetings([]); // Set empty array if no data
+        } else {
+          setMeetings(response.data);
+        }
       } catch (error) {
         console.error("Error fetching meetings:", error);
       } finally {
@@ -58,10 +60,15 @@ const Meeting = () => {
     fetchMeetings();
   }, []);
 
+  // Debugging log to check fetched data
+  useEffect(() => {
+    console.log("Meetings Data:", meetings);
+  }, [meetings]);
+
   // Filter meetings based on topic and date
   const filteredMeetings = meetings.filter((meeting) => {
     const matchesTopic = meeting.meetingTitle
-      .toLowerCase()
+      ?.toLowerCase()
       .includes(searchTerm.toLowerCase());
     const matchesDate = searchDate ? meeting.date === searchDate : true;
     return matchesTopic && matchesDate;
@@ -77,11 +84,11 @@ const Meeting = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // Reset to first page when rows per page is changed
   };
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+
   if (loading) {
     return (
       <>
@@ -95,7 +102,7 @@ const Meeting = () => {
             severity="info"
             sx={{ width: "100%" }}
           >
-            Loading
+            Loading...
           </Alert>
         </Snackbar>
       </>
@@ -112,11 +119,7 @@ const Meeting = () => {
         marginBottom={2}
       >
         <h2 className="text-xl font-bold mb-4">Employee Meetings</h2>
-        <Box
-          display="flex"
-          gap={2}
-          sx={{ width: "800px", justifyContent: "flex-end" }}
-        >
+        <Box display="flex" gap={2} sx={{ width: "800px", justifyContent: "flex-end" }}>
           {/* Topic Filter */}
           <TextField
             label="Search by Topic"
@@ -148,13 +151,9 @@ const Meeting = () => {
                 <TableCell style={{ width: "130px", fontWeight: "bold" }}>
                   Meeting Title
                 </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  Description
-                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>Mode</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  Participants
-                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Participants</TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>Duration</TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>Date</TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>Time</TableCell>
@@ -162,36 +161,38 @@ const Meeting = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredMeetings.length > 0 ? (
+              {filteredMeetings?.length > 0 ? (
                 filteredMeetings
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((meeting) => (
                     <TableRow key={meeting.id}>
-                      <TableCell>{meeting.id}</TableCell>
-                      <TableCell>{meeting.meetingTitle}</TableCell>
-                      <TableCell>{meeting.description}</TableCell>
-                      <TableCell>{meeting.meetingMode}</TableCell>
-                      <TableCell>{meeting.participants.join(", ")}</TableCell>
-                      <TableCell>{meeting.duration}</TableCell>
-                      <TableCell>{meeting.date}</TableCell>
-                      <TableCell sx={{ width: "110px" }}>
-                        {new Date(meeting.scheduledTime).toLocaleTimeString()}
+                      <TableCell>{meeting.id || "N/A"}</TableCell>
+                      <TableCell>{meeting.meetingTitle || "N/A"}</TableCell>
+                      <TableCell>{meeting.description || "N/A"}</TableCell>
+                      <TableCell>{meeting.meetingMode || "N/A"}</TableCell>
+                      <TableCell>{meeting.participants?.join(", ") || "N/A"}</TableCell>
+                      <TableCell>{meeting.duration || "N/A"}</TableCell>
+                      <TableCell>{meeting.date || "N/A"}</TableCell>
+                      <TableCell>
+                        {meeting.scheduledTime
+                          ? new Date(meeting.scheduledTime).toLocaleTimeString()
+                          : "N/A"}
                       </TableCell>
                       <TableCell>
-                        <a
-                          href={meeting.meetingLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Join
-                        </a>
+                        {meeting.meetingLink ? (
+                          <a href={meeting.meetingLink} target="_blank" rel="noopener noreferrer">
+                            Join
+                          </a>
+                        ) : (
+                          "No Link"
+                        )}
                       </TableCell>
                     </TableRow>
                   ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={11} align="center">
-                    No meetings match the search criteria.
+                  <TableCell colSpan={9} align="center">
+                    No meetings found.
                   </TableCell>
                 </TableRow>
               )}

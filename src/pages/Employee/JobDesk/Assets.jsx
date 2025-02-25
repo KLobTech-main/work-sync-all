@@ -118,6 +118,28 @@ function Assets() {
                   </TableHead>
 
                   <TableBody>
+
+                  {filteredAssets.length > 0 ? (
+  filteredAssets.map((asset, index) => (
+    <TableRow key={index}>
+      <TableCell>{asset.assetName || 'N/A'}</TableCell>
+      <TableCell>{asset.assetCode || 'N/A'}</TableCell>
+      <TableCell>{asset.serialNo || 'N/A'}</TableCell>
+      <TableCell>{asset.isWorking ? 'Yes' : 'No'}</TableCell>
+      <TableCell>{asset.type || 'N/A'}</TableCell>
+      <TableCell>{asset.date || 'N/A'}</TableCell>
+      <TableCell>{asset.note || 'N/A'}</TableCell>
+    </TableRow>
+  ))
+) : (
+  <TableRow>
+    <TableCell colSpan={7} align="center">
+      No assets found.
+    </TableCell>
+  </TableRow>
+)}
+
+
                     {filteredAssets.length > 0 ? (
                       filteredAssets.map((asset, index) => (
                         <TableRow key={index}>

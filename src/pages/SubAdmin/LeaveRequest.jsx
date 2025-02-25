@@ -15,7 +15,6 @@ import {
   Box,
   FormControl,
   InputLabel,
-  Switch,
   CircularProgress,
 } from "@mui/material";
 import axios from "axios";
@@ -43,16 +42,14 @@ const LeaveRequest = () => {
         }
 
         const response = await axios.get(
-          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/leaves/allLeaves",
-          {
+          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-leaves`,
+            {
             headers: {
-              // "Content-Type": "application/json",
               Authorization: token,
             },
-            params: { adminEmail },
+            params: {adminEmail:adminEmail },
           }
         );
-        console.log(response);
         setLeaveData(response.data || []);
       } catch (err) {
         setError(err.message);
@@ -83,8 +80,8 @@ const LeaveRequest = () => {
     page * rowsPerPage + rowsPerPage
   );
 
-  // Handle status toggle
-  const handleStatusToggle = async (id) => {
+  // Handle leave approval/rejection
+  const handleStatusChange = async (id, newStatus) => {
     try {
       const token = localStorage.getItem("token");
       const adminEmail = localStorage.getItem("email");
@@ -93,20 +90,15 @@ const LeaveRequest = () => {
         throw new Error("Token or admin email is missing");
       }
 
-      const updatedLeave = leaveData.find((leave) => leave.id === id);
-      const newStatus =
-        updatedLeave.status === "APPROVED" ? "Rejected" : "APPROVED";
-
       await axios.patch(
         "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/approve/leave",
         {
           adminEmail,
           leaveId: id,
-          status: newStatus.toUpperCase(),
+          status: newStatus,
         },
         {
           headers: {
-            accept: "*/*",
             "Content-Type": "application/json",
             Authorization: token,
           },
@@ -198,15 +190,17 @@ const LeaveRequest = () => {
                     <TableCell>{leave.reason}</TableCell>
                     <TableCell>{leave.status}</TableCell>
                     <TableCell>
-                      <Switch
-                        checked={leave.status === "APPROVED"}
-                        onChange={() => {
-                          if (leave.status !== "APPROVED") {
-                            handleStatusToggle(leave.id);
+                      <FormControl sx={{ width: "150px" }}>
+                        <Select
+                          value={leave.status}
+                          onChange={(e) =>
+                            handleStatusChange(leave.id, e.target.value)
                           }
-                        }}
-                        color="primary"
-                      />
+                        >
+                          <MenuItem value="APPROVED">Approved</MenuItem>
+                          <MenuItem value="REJECTED">Rejected</MenuItem>
+                        </Select>
+                      </FormControl>
                     </TableCell>
                   </TableRow>
                 ))

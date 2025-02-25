@@ -1,29 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import {
   Box,
   Button,
   TextField,
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Typography,
-  Card,
-  CardContent,
-  CardActions,
 } from "@mui/material";
 
 const AnnouncementForm = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [recipient, setRecipient] = useState("");
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
+  const recipient="employee"
 
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleMessageChange = (e) => setMessage(e.target.value);
-  const handleRecipientChange = (e) => setRecipient(e.target.value);
 
   const handleSubmit = async () => {
     if (!title || !message || !recipient) {
@@ -63,7 +56,6 @@ const AnnouncementForm = () => {
         setAnnouncements([requestData, ...announcements]);
         setTitle("");
         setMessage("");
-        setRecipient("");
       } else {
         alert("Failed to create announcement");
       }
@@ -121,25 +113,9 @@ const AnnouncementForm = () => {
 
       {/* Recipient Selection */}
       <FormControl fullWidth variant="outlined" sx={{ marginBottom: 2 }}>
-        <InputLabel>Recipient</InputLabel>
-        <Select
-          value={recipient}
-          onChange={handleRecipientChange}
-          label="Recipient"
-          sx={{
-            backgroundColor: "#f9f9f9",
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "8px",
-            },
-          }}
-        >
-          <MenuItem value="employee">Employee</MenuItem>
-          <MenuItem value="subAdmin">Sub-Admin</MenuItem>
-        </Select>
       </FormControl>
-
       {/* Submit Button */}
-      <Box sx={{ marginTop: 3 }}>
+      <Box >
         <Button
           variant="contained"
           color="primary"
@@ -159,47 +135,6 @@ const AnnouncementForm = () => {
         >
           {loading ? "Submitting..." : "Submit Announcement"}
         </Button>
-      </Box>
-
-      {/* Display All Announcements */}
-      <Box sx={{ marginTop: 4 }}>
-        <Typography
-          variant="h5"
-          gutterBottom
-          sx={{ fontWeight: "bold", color: "#333" }}
-        >
-          All Announcements
-        </Typography>
-        {announcements.length > 0 ? (
-          announcements.map((item, index) => (
-            <Card
-              key={index}
-              sx={{ marginBottom: 3, borderRadius: "10px", boxShadow: 3 }}
-            >
-              <CardContent>
-                <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                  Announcement {index + 1}
-                </Typography>
-                <Typography variant="body1" sx={{ marginBottom: 1 }}>
-                  <strong>Title:</strong> {item.title}
-                </Typography>
-                <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                  <strong>Message:</strong> {item.message}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Recipient:</strong> {item.recipientType}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" color="secondary">
-                  View Details
-                </Button>
-              </CardActions>
-            </Card>
-          ))
-        ) : (
-          <Typography>No announcements available.</Typography>
-        )}
       </Box>
     </Box>
   );

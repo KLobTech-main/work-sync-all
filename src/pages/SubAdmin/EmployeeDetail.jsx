@@ -26,7 +26,7 @@ import axios from "axios";
 
 const EmployeeDetails = () => {
   const navigate = useNavigate();
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState({ data: [] });
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -50,17 +50,12 @@ const EmployeeDetails = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       const token = localStorage.getItem("token");
-      const adminEmail = localStorage.getItem("email");
-      // const token =
-      //   "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleGFtcGxlQGNvbXBhbnkuY29tIiwiaWF0IjoxNzM1MTkzNDQyLCJleHAiOjE3MzUyMjk0NDJ9.TFMeMTNRUfeqIxxwTgAt-J2PCXXO4nLz22AeS4SsuNg";
 
       try {
         setLoading(true);
         setSnackbarOpen(true);
         const response = await fetch(
-          `http://localhost:8080/admin/api/get-all-users?adminEmail=${encodeURIComponent(
-            adminEmail
-          )}`,
+          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/allUsers",
           {
             headers: {
               Authorization: token,
@@ -70,22 +65,27 @@ const EmployeeDetails = () => {
         );
 
         if (response.ok) {
+
           const data = await response.json();
-          setEmployees(data);
-        } else {
+          console.log("Fetched Employees:", data);
+          setEmployees(data); // Ensure you're storing the entire response
+       
+          } else {
           console.error("Failed to fetch employees");
+          throw new Error("Failed to fetch employees");
         }
       } catch (error) {
         console.error("Error fetching employees:", error);
+        ([]); // Reset employees state
       } finally {
         setLoading(false);
         setSnackbarOpen(false);
       }
     };
-
+    
     fetchEmployees();
   }, []);
-
+  console.log(employees)
   const handleClick = (event, employee) => {
     setAnchorEl(event.currentTarget);
     setSelectedEmployee(employee);
@@ -172,7 +172,7 @@ const EmployeeDetails = () => {
   };
 
   // const handleEditSave = () => {
-  //   setEmployees((prevEmployees) =>
+  //   ((prevEmployees) =>
   //     prevEmployees.map((emp) =>
   //       emp.id === editEmployee.id ? editEmployee : emp
   //     )
@@ -187,13 +187,13 @@ const EmployeeDetails = () => {
 
       // Prepare the API payload
       const payload = {
-        adminEmail: adminEmail, // From localStorage
-        currentEmail: editEmployee.email, // From employee data
-        name: editEmployee.name, // From form input
+        subAdminEmail: adminEmail, // From localStorage
+        usersCurrentEmail: editEmployee.email, // From employee data
+        userName: editEmployee.name, // From form input
         // role: editEmployee.role, // From form input
-        mobileNo: editEmployee.mobile, // From form input
+        userMobileNo: editEmployee.mobile, // From form input
         // salary: editEmployee.salary ? [editEmployee.salary] : [], // From form input
-        newEmail: editEmployee.newEmail, // From form input
+        usersNewEmail: editEmployee.newEmail, // From form input
       };
 
       // Make the PUT request
@@ -211,13 +211,15 @@ const EmployeeDetails = () => {
       // Handle response
       if (response.status === 200 || response.status === 204) {
         // Update local state if necessary
-        setEmployees((prevEmployees) =>
+        ((prevEmployees) =>
           prevEmployees.map((emp) =>
             emp.email === editEmployee.email ? { ...editEmployee } : emp
           )
         );
         setEditDialogOpen(false); // Close the dialog
         alert("Employee updated successfully!");
+        
+        
         console.log(editEmployee.mobileNo);
       } else {
         alert("Failed to update employee. Please try again.");
@@ -232,9 +234,11 @@ const EmployeeDetails = () => {
     setShowAllInfoDialogOpen(false);
   };
 
-  const filteredEmployees = employees.filter((employee) =>
-    employee.name.toLowerCase().includes(search.toLowerCase())
+  const filteredEmployees = (Array.isArray(employees.data) ? employees.data : []).filter((employee) =>
+    employee.name?.toLowerCase().includes(search.toLowerCase())
   );
+  
+  console.log("Employees Data:", employees, typeof employees);
 
   const employeesPerPage = 10;
   const startIndex = (page - 1) * employeesPerPage;
@@ -410,14 +414,14 @@ const EmployeeDetails = () => {
                               <MenuItem
                                 onClick={() => handleActionSelect("salary")}
                               >
-                                Salary Overview
+                                Edit Salary 
                               </MenuItem>
                               <MenuItem
                                 onClick={() =>
                                   handleActionSelect("salaryDetails")
                                 }
                               >
-                                Salary Details
+                                Edit Allowance
                               </MenuItem>
                             </Menu>
                           </TableCell>
@@ -476,8 +480,8 @@ const EmployeeDetails = () => {
                   label="Mobile Number"
                   type="text"
                   fullWidth
-                  value={editEmployee?.mobile || ""}
-                  onChange={(e) => handleEditChange("mobile", e.target.value)}
+                  value={editEmployee?.mobileNo || ""}
+                  onChange={(e) => handleEditChange("mobileNo", e.target.value)}
                 />
                 <TextField
                   margin="dense"
@@ -629,6 +633,54 @@ const EmployeeDetails = () => {
                           </TableCell>
                           <TableCell>
                             {selectedEmployee.allLeaves?.optionalLeave || 0}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <strong>salary</strong>
+                          </TableCell>
+                          <TableCell>
+                            {selectedEmployee.salaryOverview[selectedEmployee.salaryOverview.length-1] || 0}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <strong>Conveyance Allowance </strong>
+                          </TableCell>
+                          <TableCell>
+                            {selectedEmployee.salaryDetails.conveyanceAllowance || 0}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <strong>House Rent Allowance </strong>
+                          </TableCell>
+                          <TableCell>
+                            {selectedEmployee.salaryDetails.houseRentAllowance || 0}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <strong>Medical Allowance </strong>
+                          </TableCell>
+                          <TableCell>
+                            {selectedEmployee.salaryDetails.medicalAllowance || 0}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <strong>Pay Run Period </strong>
+                          </TableCell>
+                          <TableCell>
+                            {selectedEmployee.salaryDetails.payRunPeriod || 0}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <strong>Special Allowance</strong>
+                          </TableCell>
+                          <TableCell>
+                            {selectedEmployee.salaryDetails.specialAllowance || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>

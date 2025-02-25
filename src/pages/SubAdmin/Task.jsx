@@ -15,6 +15,7 @@ import {
   TablePagination,
   Typography,
   Button,
+  CircularProgress
 } from "@mui/material";
 
 const Task = () => {
@@ -37,7 +38,7 @@ const Task = () => {
         const adminEmail = localStorage.getItem("email"); // Retrieve email from localStorage
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/all?adminEmail=${adminEmail}`,
+          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-tasks?subAdminEmail=${adminEmail}`,
           {
             headers: {
               Authorization: token, // Add token to request headers
@@ -45,7 +46,7 @@ const Task = () => {
           }
         );
 
-        setTasks(response.data); // Update tasks state
+        setTasks(response.data.data || []); // Fix: Use response.data.data
       } catch {
         setError("Failed to fetch tasks. Please try again."); // Handle errors
       } finally {
@@ -58,11 +59,11 @@ const Task = () => {
   }, []);
 
   // Filter tasks based on search input
-  const filteredTasks = tasks.filter(
+  const filteredTasks = tasks?.filter(
     (task) =>
-      task.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      task?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
 
   // Handle page change
   const handleChangePage = (event, newPage) => {
@@ -78,18 +79,6 @@ const Task = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-
-  if (loading) {
-    return null; // Return nothing or a loading spinner if you prefer, to hide the UI during loading
-  }
-
-  if (error) {
-    return (
-      <Typography variant="body1" color="error">
-        {error}
-      </Typography>
-    );
-  }
 
   return (
     <div>
@@ -124,75 +113,98 @@ const Task = () => {
         </Box>
       </Box>
 
+      {/* Show loading spinner */}
+      {loading && (
+        <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+          <CircularProgress />
+        </Box>
+      )}
+
+      {/* Show error message */}
+      {error && (
+        <Typography variant="body1" color="error" align="center">
+          {error}
+        </Typography>
+      )}
+
+      {/* Show message when no tasks are available */}
+      {!loading && tasks.length === 0 && (
+        <Typography variant="body1" align="center" mt={2}>
+          No tasks available.
+        </Typography>
+      )}
+
       {/* Table component */}
-      <Paper elevation={3}>
-        <TableContainer>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Assigned By</TableCell>
-                <TableCell>Assigned To</TableCell>
-                <TableCell>Title</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Deadline</TableCell>
-                <TableCell>Status</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredTasks.length > 0 ? (
-                filteredTasks
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((task) => (
-                    <TableRow key={task.id}>
-                      <TableCell>{task.id}</TableCell>
-                      <TableCell>{task.assignedBy}</TableCell>
-                      <TableCell>{task.assignedTo}</TableCell>
-                      <TableCell>{task.title}</TableCell>
-                      <TableCell>
-                        {expandedTask === task.id ? (
-                          // Show full description if expanded
-                          <div style={{ whiteSpace: "pre-wrap" }}>
-                            {task.description}
-                          </div>
-                        ) : (
-                          // Truncate description and show expand button
-                          <div>
-                            {`${task.description.slice(0, 100)}... `}
-                            <Button onClick={() => setExpandedTask(task.id)}>
-                              View More
-                            </Button>
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(task.deadLine).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>{task.status}</TableCell>
-                    </TableRow>
-                  ))
-              ) : (
+      {!loading && tasks.length > 0 && (
+        <Paper elevation={3}>
+          <TableContainer>
+            <Table aria-label="simple table">
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={7} align="center">
-                    No tasks match the search criteria.
-                  </TableCell>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Assigned By</TableCell>
+                  <TableCell>Assigned To</TableCell>
+                  <TableCell>Title</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>Deadline</TableCell>
+                  <TableCell>Status</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+              </TableHead>
+              <TableBody>
+                {filteredTasks.length > 0 ? (
+                  filteredTasks
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((task) => (
+                      <TableRow key={task.id}>
+                        <TableCell>{task.id}</TableCell>
+                        <TableCell>{task.assignedBy}</TableCell>
+                        <TableCell>{task.assignedTo}</TableCell>
+                        <TableCell>{task.title}</TableCell>
+                        <TableCell>
+                          {expandedTask === task.id ? (
+                            <div style={{ whiteSpace: "pre-wrap" }}>
+                              {task.description}
+                            </div>
+                          ) : (
+                            <div>
+                              {`${task.description?.slice(0, 100)}... `}
+                              <Button onClick={() => setExpandedTask(task.id)}>
+                                View More
+                              </Button>
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(task.deadLine).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>{task.status}</TableCell>
+                      </TableRow>
+                    ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} align="center">
+                      No tasks match the search criteria.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      )}
 
       {/* Pagination */}
-      <TablePagination
-        rowsPerPageOptions={[10]}
-        component="div"
-        count={filteredTasks.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      {tasks.length > 0 && (
+        <TablePagination
+          rowsPerPageOptions={[10]}
+          component="div"
+          count={filteredTasks.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      )}
     </div>
   );
 };

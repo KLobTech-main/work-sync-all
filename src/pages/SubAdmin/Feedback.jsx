@@ -34,12 +34,12 @@ const FeedbackTable = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/feedback/all`,
+          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-feedback`,
           {
             headers: {
               Authorization: authToken,
             },
-            params: { adminEmail },
+            params: { subAdminEmail:adminEmail },
           }
         );
         setFeedbackData(response.data || []);

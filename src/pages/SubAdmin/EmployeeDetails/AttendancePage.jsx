@@ -16,22 +16,24 @@ import {
   Button,
 } from "@mui/material";
 
-// Utility function to format date
+// Utility function to format date (API vs Input format mismatch fixed)
 const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
+  return `${year}-${month}-${day}`; // Matching with date input format (YYYY-MM-DD)
 };
 
 // Utility function to format time
 const formatTime = (timeString) => {
+  if (!timeString) return "N/A";
   const date = new Date(timeString);
   let hours = date.getHours();
   const minutes = String(date.getMinutes()).padStart(2, "0");
   const ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12 || 12; // Convert to 12-hour format
+  hours = hours % 12 || 12;
   return `${hours}:${minutes} ${ampm}`;
 };
 
@@ -50,25 +52,33 @@ const AttendancePage = () => {
     const fetchAttendanceData = async () => {
       const adminEmail = localStorage.getItem("email");
       const authToken = localStorage.getItem("token");
-      const employeeEmail = employee.email; // Get email from employee data
+      const employeeEmail = employee?.email;
 
       if (!adminEmail || !authToken || !employeeEmail) {
-        setError(
-          "Missing admin email, authentication token, or employee email."
-        );
+        setError("Missing admin email, authentication token, or employee email.");
         setLoading(false);
         return;
       }
 
-      const apiUrl = `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/attendance/${employeeEmail}`;
-
       try {
-        const response = await axios.get(apiUrl, {
-          params: { adminEmail },
-          headers: { Authorization: authToken },
-        });
-        setAttendanceData(response.data);
-      } catch {
+        console.log("Fetching attendance data...");
+        console.log(`Employee Email: ${employeeEmail}`);
+        console.log(`Admin Email: ${adminEmail}`);
+
+        const response = await axios.get(
+          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/attendance/${employeeEmail}?adminEmail=${adminEmail}`,
+          { headers: { Authorization: authToken } }
+        );
+
+        console.log("API Response:", response.data); // Debugging
+
+        if (Array.isArray(response.data)) {
+          setAttendanceData(response.data);
+        } else {
+          setError("Unexpected API response format.");
+        }
+      } catch (error) {
+        console.error("API Error:", error);
         setError("Failed to fetch attendance data. Please try again later.");
       } finally {
         setLoading(false);
@@ -79,12 +89,11 @@ const AttendancePage = () => {
   }, [employee]);
 
   // Filter attendance data based on selected date
-  const filteredAttendance = attendanceData.filter((attendance) => {
-    const matchesDate = selectedDate ? attendance.date === selectedDate : true;
-    return matchesDate;
-  });
+  const filteredAttendance = attendanceData.filter((attendance) =>
+    selectedDate ? formatDate(attendance.date) === selectedDate : true
+  );
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
 
@@ -118,10 +127,7 @@ const AttendancePage = () => {
   }
 
   return (
-    <div
-      className="p-6"
-      style={{ display: "flex", justifyContent: "space-between" }}
-    >
+    <div className="p-6" style={{ display: "flex", justifyContent: "space-between" }}>
       <div style={{ flexGrow: 1 }}>
         <div className="flex justify-between py-5">
           <Typography variant="h4" gutterBottom>
@@ -164,16 +170,12 @@ const AttendancePage = () => {
                   </TableRow>
                 ) : (
                   filteredAttendance.map((attendance, index) => (
-                    <TableRow key={index}>
+                    <TableRow key={attendance.id || index + 1}>
                       <TableCell>{attendance.id || index + 1}</TableCell>
-                      <TableCell>{attendance.name}</TableCell>
+                      <TableCell>{attendance.name || "N/A"}</TableCell>
                       <TableCell>{formatDate(attendance.date)}</TableCell>
-                      <TableCell>
-                        {formatTime(attendance.punchInTime)}
-                      </TableCell>
-                      <TableCell>
-                        {formatTime(attendance.punchOutTime)}
-                      </TableCell>
+                      <TableCell>{attendance.punchInTime ? formatTime(attendance.punchInTime) : "N/A"}</TableCell>
+                      <TableCell>{attendance.punchOutTime ? formatTime(attendance.punchOutTime) : "N/A"}</TableCell>
                     </TableRow>
                   ))
                 )}
