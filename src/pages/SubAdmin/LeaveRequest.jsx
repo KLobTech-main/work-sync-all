@@ -42,15 +42,18 @@ const LeaveRequest = () => {
         }
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-leaves`,
-            {
-            headers: {
-              Authorization: token,
-            },
-            params: {adminEmail:adminEmail },
+          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-leaves",
+          {
+            headers: { Authorization: token },
+            params: { adminEmail: adminEmail },
           }
         );
-        setLeaveData(response.data || []);
+
+        if (!response.data || !Array.isArray(response.data.data)) {
+          throw new Error("Invalid API response format");
+        }
+
+        setLeaveData(response.data.data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -70,8 +73,9 @@ const LeaveRequest = () => {
   const filteredData = leaveData.filter(
     (leave) =>
       (!nameFilter ||
-        leave.name.toLowerCase().includes(nameFilter.toLowerCase())) &&
-      (!leaveTypeFilter || leave.leaveType === leaveTypeFilter)
+        leave.name?.toLowerCase().includes(nameFilter.toLowerCase())) &&
+      (!leaveTypeFilter ||
+        leave.leaveType?.toLowerCase() === leaveTypeFilter.toLowerCase())
   );
 
   // Paginate filtered data
@@ -80,7 +84,7 @@ const LeaveRequest = () => {
     page * rowsPerPage + rowsPerPage
   );
 
-  // Handle leave approval/rejection
+  // Handle leave status change via dropdown
   const handleStatusChange = async (id, newStatus) => {
     try {
       const token = localStorage.getItem("token");
@@ -93,7 +97,7 @@ const LeaveRequest = () => {
       await axios.patch(
         "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/approve/leave",
         {
-          adminEmail,
+          subAdminEmail:adminEmail,
           leaveId: id,
           status: newStatus,
         },
@@ -152,7 +156,7 @@ const LeaveRequest = () => {
               <MenuItem value="Sick">Sick Leave</MenuItem>
               <MenuItem value="Paternity">Paternity Leave</MenuItem>
               <MenuItem value="Casual">Casual Leave</MenuItem>
-              <MenuItem value="Optional">Optional Leave</MenuItem>
+              <MenuItem value="Annual Leave">Annual Leave</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -163,40 +167,36 @@ const LeaveRequest = () => {
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow style={{ backgroundColor: "#f0f0f0" }}>
-                <TableCell style={{ fontWeight: "bold" }}>ID</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Email</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Leave Type</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Reason</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Status</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Action</TableCell>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Reason</TableCell>
+                <TableCell>Leave Type</TableCell>
+                <TableCell>Start Date</TableCell>
+                <TableCell>End Date</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {currentPageData.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} align="center">
-                    No leave requests found.
-                  </TableCell>
-                </TableRow>
-              ) : (
+              {currentPageData.length > 0 ? (
                 currentPageData.map((leave) => (
                   <TableRow key={leave.id}>
-                    <TableCell>{leave.id}</TableCell>
                     <TableCell>{leave.name}</TableCell>
                     <TableCell>{leave.email}</TableCell>
-                    <TableCell>{leave.leaveType}</TableCell>
                     <TableCell>{leave.reason}</TableCell>
-                    <TableCell>{leave.status}</TableCell>
+                    <TableCell>{leave.leaveType}</TableCell>
+                    <TableCell>{leave.startDate}</TableCell>
+                    <TableCell>{leave.endDate}</TableCell>
                     <TableCell>
-                      <FormControl sx={{ width: "150px" }}>
+                      <FormControl fullWidth>
                         <Select
                           value={leave.status}
                           onChange={(e) =>
                             handleStatusChange(leave.id, e.target.value)
                           }
                         >
+                          <MenuItem value="PENDING">Pending</MenuItem>
                           <MenuItem value="APPROVED">Approved</MenuItem>
                           <MenuItem value="REJECTED">Rejected</MenuItem>
                         </Select>
@@ -204,19 +204,25 @@ const LeaveRequest = () => {
                     </TableCell>
                   </TableRow>
                 ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} align="center">
+                    No leave records found
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
+
+        <TablePagination
+          component="div"
+          count={filteredData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+        />
       </Paper>
-      <TablePagination
-        component="div"
-        count={filteredData.length}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[]}
-      />
     </div>
   );
 };

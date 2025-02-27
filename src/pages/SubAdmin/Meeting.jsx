@@ -16,18 +16,23 @@ import {
 } from "@mui/material";
 
 const Meeting = () => {
-  const [meetings, setMeetings] = useState([]); // State for meetings
-  const [searchTerm, setSearchTerm] = useState(""); // State for topic filter
-  const [searchDate, setSearchDate] = useState(""); // State for date filter
-  const [page, setPage] = useState(0); // Current page
-  const [rowsPerPage, setRowsPerPage] = useState(10); // Rows per page
+  const [meetings, setMeetings] = useState([]); 
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [searchDate, setSearchDate] = useState(""); 
+  const [page, setPage] = useState(0); 
+  const [rowsPerPage, setRowsPerPage] = useState(10); 
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Fetch meetings data
   useEffect(() => {
     const fetchMeetings = async () => {
       const token = localStorage.getItem("token");
+      if (!token) {
+        setErrorMessage("Authorization token is missing");
+        setSnackbarOpen(true);
+        return;
+      }
 
       try {
         setLoading(true);
@@ -42,30 +47,29 @@ const Meeting = () => {
           }
         );
 
-        console.log("API Response:", response); // Debugging log
+        console.log("API Response:", response); 
 
-        if (response.status === 204 || !response.data) {
-          setMeetings([]); // Set empty array if no data
+        if (response.status === 204 || !response.data || !response.data.data) {
+          setMeetings([]); 
         } else {
-          setMeetings(response.data);
+          setMeetings(response.data.data); 
         }
       } catch (error) {
         console.error("Error fetching meetings:", error);
+        setErrorMessage("Failed to load meetings. Please try again.");
+        setSnackbarOpen(true);
       } finally {
         setLoading(false);
-        setSnackbarOpen(false);
       }
     };
 
     fetchMeetings();
   }, []);
 
-  // Debugging log to check fetched data
   useEffect(() => {
     console.log("Meetings Data:", meetings);
   }, [meetings]);
 
-  // Filter meetings based on topic and date
   const filteredMeetings = meetings.filter((meeting) => {
     const matchesTopic = meeting.meetingTitle
       ?.toLowerCase()
@@ -74,15 +78,13 @@ const Meeting = () => {
     return matchesTopic && matchesDate;
   });
 
-  // Handle page change
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  // Handle rows per page change
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to first page when rows per page is changed
+    setPage(0); 
   };
 
   const handleSnackbarClose = () => {
@@ -91,36 +93,23 @@ const Meeting = () => {
 
   if (loading) {
     return (
-      <>
-        <Snackbar
-          open={snackbarOpen}
-          onClose={handleSnackbarClose}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity="info"
-            sx={{ width: "100%" }}
-          >
-            Loading...
-          </Alert>
-        </Snackbar>
-      </>
+      <Snackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: "100%" }}>
+          Loading...
+        </Alert>
+      </Snackbar>
     );
   }
 
   return (
     <div className="p-6">
-      {/* Header and Filters */}
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        marginBottom={2}
-      >
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
         <h2 className="text-xl font-bold mb-4">Employee Meetings</h2>
         <Box display="flex" gap={2} sx={{ width: "800px", justifyContent: "flex-end" }}>
-          {/* Topic Filter */}
           <TextField
             label="Search by Topic"
             variant="outlined"
@@ -128,7 +117,6 @@ const Meeting = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ width: "400px" }}
           />
-          {/* Date Filter */}
           <TextField
             label="Search by Date"
             type="date"
@@ -141,7 +129,14 @@ const Meeting = () => {
         </Box>
       </Box>
 
-      {/* Meeting Table */}
+      {errorMessage && (
+        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+          <Alert onClose={handleSnackbarClose} severity="error">
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      )}
+
       <Paper elevation={3} className="mt-4">
         <TableContainer>
           <Table>
@@ -201,7 +196,6 @@ const Meeting = () => {
         </TableContainer>
       </Paper>
 
-      {/* Pagination */}
       <TablePagination
         rowsPerPageOptions={[10]}
         component="div"
