@@ -1,168 +1,236 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Grid,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  TextField,
+  MenuItem,
+  Select,
+  Snackbar,
+  Alert,
+  InputLabel,
+  FormControl,
+  Box,
+  TablePagination,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
 } from '@mui/material';
-import { AddCircleOutline as AddIcon } from '@mui/icons-material';
-import axios from 'axios';
 
-const Tickets = () => {
-  const [newTicket, setNewTicket] = useState({
-    title: '',
-    description: '',
-    priority: '',
-    status: 'OPEN',
-  });
-
+const Ticket = () => {
   const [tickets, setTickets] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchStatus, setSearchStatus] = useState('');
+  const [searchPriority, setSearchPriority] = useState('');
+  const [searchEmployee, setSearchEmployee] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [error, setError] = useState('');
 
-  const token = localStorage.getItem('jwtToken');
-  const email = localStorage.getItem('email');
+  // Dialog-related state
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
   useEffect(() => {
-    if (email) {
-      axios
-        .get(`https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tickets/${email}`, {
-          headers: {
-            Authorization: token,
-          },
-        })
-        .then((response) => {
-          setTickets(response.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching tickets:', error);
-        });
-    }
-  }, [email, token]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewTicket((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleCreateTicket = async () => {
-    const ticketData = {
-      email: email,
-      title: newTicket.title,
-      description: newTicket.description,
-      status: newTicket.status,
+    const fetchTickets = async () => {
+      try {
+        setLoading(true);
+        setSnackbarOpen(true);
+        const adminEmail = localStorage.getItem('email'); // Fetch from localStorage
+        const token = localStorage.getItem('token'); // Fetch from localStorage
+        const response = await axios.get(
+          'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tickets/',
+          {
+            params: { adminEmail },
+            headers: { Authorization: token },
+          }
+        );
+        setTickets(response.data);
+      } catch (err) {
+        setError('Failed to fetch tickets. Please try again.');
+      } finally {
+        setLoading(false);
+        setSnackbarOpen(false);
+      }
     };
 
-    try {
-      const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tickets',
-        ticketData,
-        {
-         headers: {
-  Authorization: token,
-  'Content-Type': 'application/json'
-}
+    fetchTickets();
+  }, []);
 
-        }
-      );
+  const filteredTickets = tickets.filter((ticket) => {
+    const matchesIssue = ticket.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = searchStatus ? ticket.status === searchStatus : true;
+    const matchesPriority = searchPriority ? ticket.priority === searchPriority : true;
+    const matchesEmployee = ticket.email.toLowerCase().includes(searchEmployee.toLowerCase());
+    return matchesIssue && matchesStatus && matchesPriority && matchesEmployee;
+  });
 
-      setTickets([...tickets, response.data]);
-      setNewTicket({ title: '', description: '', priority: '', status: 'OPEN' });
-    } catch (error) {
-      console.error('Error creating ticket:', error);
-      alert('Failed to create ticket. Please try again later.');
-    }
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  return (
-    <Box sx={{ padding: '20px' }}>
-      <Typography variant="h4" sx={{ marginBottom: '20px' }}>
-        Tickets
-      </Typography>
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
-      <Box sx={{ marginBottom: '30px' }}>
-        <Typography variant="h6">Create a New Ticket</Typography>
-        <Grid container spacing={2} sx={{ marginTop: '10px' }}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Ticket Title"
-              variant="outlined"
-              fullWidth
-              name="title"
-              value={newTicket.title}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Priority"
-              variant="outlined"
-              fullWidth
-              name="priority"
-              value={newTicket.priority}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Description"
-              variant="outlined"
-              fullWidth
-              name="description"
-              value={newTicket.description}
-              onChange={handleChange}
-              multiline
-              rows={3}
-            />
-          </Grid>
-        </Grid>
-        <Button
-          sx={{ marginTop: '20px' }}
-          variant="contained"
-          color="primary"
-          onClick={handleCreateTicket}
-          startIcon={<AddIcon />}
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const handleOpenDialog = (ticket) => {
+    setSelectedTicket(ticket);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedTicket(null);
+  };
+
+  if (loading) {
+    return (
+      <>
+        <Snackbar
+          open={snackbarOpen}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          Create Ticket
-        </Button>
+          <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+            Loading
+          </Alert>
+        </Snackbar>
+      </>
+    );
+  }
+
+  if (error) return <div>{error}</div>;
+
+  return (
+    <div className="p-6">
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
+        <h2 className="text-xl font-bold mb-4">Employee Tickets</h2>
+        <Box display="flex" gap={2} sx={{ width: '800px', justifyContent: 'flex-end' }}>
+          <TextField
+            label="Search by Issue"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ width: '400px' }}
+          />
+          <TextField
+            label="Search by Employee"
+            variant="outlined"
+            value={searchEmployee}
+            onChange={(e) => setSearchEmployee(e.target.value)}
+            sx={{ width: '400px' }}
+          />
+          <FormControl variant="outlined" sx={{ width: '200px' }}>
+            <InputLabel>Status</InputLabel>
+            <Select value={searchStatus} onChange={(e) => setSearchStatus(e.target.value)} label="Status">
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="OPEN">Open</MenuItem>
+              <MenuItem value="RESOLVED">Resolved</MenuItem>
+              <MenuItem value="IN_PROGRESS">In Progress</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl variant="outlined" sx={{ width: '200px' }}>
+            <InputLabel>Priority</InputLabel>
+            <Select value={searchPriority} onChange={(e) => setSearchPriority(e.target.value)} label="Priority">
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="High">High</MenuItem>
+              <MenuItem value="Medium">Medium</MenuItem>
+              <MenuItem value="Low">Low</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
       </Box>
 
-      <Typography variant="h6" sx={{ marginBottom: '20px' }}>
-        All Tickets
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Priority</TableCell>
-              <TableCell>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tickets.map((ticket) => (
-              <TableRow key={ticket.id}>
-                <TableCell>{ticket.title}</TableCell>
-                <TableCell>{ticket.description}</TableCell>
-                <TableCell>{ticket.priority}</TableCell>
-                <TableCell>{ticket.status}</TableCell>
+      <Paper elevation={3} className="mt-4">
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow style={{ backgroundColor: '#f0f0f0' }}>
+                <TableCell style={{ fontWeight: 'bold' }}>ID</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Email</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Title</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Description</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Status</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Priority</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
+            </TableHead>
+            <TableBody>
+              {filteredTickets.length > 0 ? (
+                filteredTickets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((ticket,index) => (
+                  <TableRow key={ticket.id} onClick={() => handleOpenDialog(ticket)} style={{ cursor: 'pointer' }}>
+                    <TableCell>{index+1}</TableCell>
+                    <TableCell>{ticket.email}</TableCell>
+                    <TableCell>{ticket.title}</TableCell>
+                    <TableCell>
+                      {ticket.description.split(' ').slice(0, 5).join(' ')}
+                      {ticket.description.split(' ').length > 5 && '...'}
+                    </TableCell>  <TableCell>
+                      <span style={{ fontWeight: 'bold', color: ticket.status === 'OPEN' ? 'red' : 'green' }}>
+                        {ticket.status}
+                      </span>
+                    </TableCell>
+                    <TableCell>{ticket.priority}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    No tickets match the search criteria.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
+      <TablePagination
+        rowsPerPageOptions={[10]}
+        component="div"
+        count={filteredTickets.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+
+      {/* Dialog for displaying ticket details */}
+      {selectedTicket && (
+        <Dialog open={openDialog} onClose={handleCloseDialog}>
+          <DialogTitle>Ticket Details</DialogTitle>
+          <DialogContent>
+            <Box>
+              <p><strong>ID:</strong> {selectedTicket.id}</p>
+              <p><strong>Email:</strong> {selectedTicket.email}</p>
+              <p><strong>Title:</strong> {selectedTicket.title}</p>
+              <p><strong>Description:</strong> {selectedTicket.description}</p>
+              <p><strong>Status:</strong> {selectedTicket.status}</p>
+              <p><strong>Priority:</strong> {selectedTicket.priority}</p>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+    </div>
   );
 };
 
-export default Tickets;
+export default Ticket;

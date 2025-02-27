@@ -1,298 +1,210 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
-  Box,
-  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
-  Button,
-  Grid,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  CircularProgress,
+  Box,
   Snackbar,
   Alert,
+  TablePagination,
+  CircularProgress,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from '@mui/material';
-import { AddCircleOutline as AddIcon } from '@mui/icons-material';
-import axios from 'axios';
 
 const Task = () => {
-  const [newTask, setNewTask] = useState({
-    assignedTo: '',
-    title: '',
-    description: '',
-    deadLine: '',
-    status: 'On Going',
-  });
-  const [allTasks, setAllTasks] = useState([]);
-  const [users, setUsers] = useState([]); 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(''); 
-  const [snackbarOpen, setSnackbarOpen] = useState(false); 
-  const [snackbarMessage, setSnackbarMessage] = useState(''); 
-  const token = localStorage.getItem('jwtToken');
-  const email = localStorage.getItem('email');
-  console.log(allTasks)
-  
+  const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [selectedTask, setSelectedTask] = useState(null); // For the selected task
+  const [dialogOpen, setDialogOpen] = useState(false); // Dialog state
+
+  // Fetch tasks from API
   useEffect(() => {
-    fetchUsers();
+    const fetchTasks = async () => {
+      try {
+        setLoading(true);
+        setSnackbarOpen(true);
+        const adminEmail = localStorage.getItem('email');
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/all?adminEmail=${adminEmail}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        setTasks(response.data);
+      } catch (err) {
+        setError('Failed to fetch tasks. Please try again.');
+      } finally {
+        setLoading(false);
+        setSnackbarOpen(false);
+      }
+    };
+
     fetchTasks();
   }, []);
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const response = await axios.get(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get-all-users',
-        {
-          headers: { Authorization: token },
-          params: { email },
-        }
-      );
-      const emailList = response.data.map((user) => user.email); 
-      setUsers(emailList);
-    } catch (err) {
-      console.error('Error fetching users:', err.response || err.message);
-      setError('Failed to fetch users. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
+  // Handle row click
+  const handleRowClick = (task) => {
+    setSelectedTask(task); // Set selected task
+    setDialogOpen(true); // Open dialog
   };
 
-  const fetchTasks = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const [assignedByResponse, assignedToResponse] = await Promise.all([
-
-        axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tasks/get-assigned-tasks`,
-          { headers: { Authorization: token }, params: { email } }
-        ),
-        axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tasks/get-given-tasks`,
-          { headers: { Authorization: token }, params: { assignedTo: email } }
-        ),
-      ]);
-
-      const assignedByTasks = assignedByResponse.data.tasks.map((task) => ({
-        ...task,
-        type: 'Assigned By Me',
-      }));
-      const assignedToTasks = assignedToResponse.data.tasks.map((task) => ({
-        ...task,
-        type: 'Assigned To Me',
-      }));
-      setAllTasks([...assignedByTasks, ...assignedToTasks]);
-    } catch (err) {
-      console.error('Error fetching tasks:', err.response || err.message);
-      setError('Failed to fetch tasks. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
+  // Handle dialog close
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setSelectedTask(null); // Clear selected task
   };
 
-  const handleCreateTask = async () => {
-    if (!newTask.assignedTo || !newTask.title || !newTask.description) {
-      setError('Please fill in all required fields.');
-      setSnackbarMessage('Please fill in all required fields.');
-      setSnackbarOpen(true);
-      return;
-    }
+  // Filtered tasks
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-    setError('');
-    setLoading(true);
-
-    try {
-      await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tasks/create-task',
-        { ...newTask, assignedBy: email },
-        { headers: { Authorization: token } }
-      );
-
-      fetchTasks();
-      setNewTask({ assignedTo: '', title: '', description: '', deadLine: '', status: 'On Going' });
-    } catch (err) {
-      console.error('Error creating task:', err.response || err.message);
-      setError('Failed to create task. Please try again.');
-      setSnackbarMessage('Failed to create task. Please try again.');
-      setSnackbarOpen(true);
-    } finally {
-      setLoading(false);
-    }
+  // Handle page and rows per page changes
+  const handleChangePage = (event, newPage) => setPage(newPage);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewTask((prevState) => ({ ...prevState, [name]: value }));
-  };
-
-  const handleAssignedToChange = (e) => {
-    const value = e.target.value;
-    setNewTask((prevState) => ({ ...prevState, assignedTo: value }));
-  };
-
-  const handleCloseSnackbar = () => {
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+  if(loading){
+    return(
+      <>
+    <Snackbar
+      open={snackbarOpen}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
+      <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+        Loading
+      </Alert>
+    </Snackbar>
+      </>
+    )
+  }
 
-  return (
-    <Box sx={{ padding: '20px' }}>
-      <Typography variant="h4" sx={{ marginBottom: '20px' }}>
-        Task Management
-      </Typography>
-
-      {error && (
-        <Typography color="error" sx={{ marginBottom: '20px' }}>
+  if (error) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <Typography variant="h6" color="error">
           {error}
         </Typography>
-      )}
-
-      <Box sx={{ marginBottom: '30px' }}>
-        <Typography variant="h6">Create a New Task</Typography>
-        <Grid container spacing={2} sx={{ marginTop: '10px' }}>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Assigned To</InputLabel>
-              <Select
-                value={newTask.assignedTo}
-                onChange={handleAssignedToChange}
-                name="assignedTo"
-                renderValue={(selected) => selected}
-              >
-                {users.map((email) => (
-                  <MenuItem key={email} value={email}>
-                    {email}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Deadline"
-              variant="outlined"
-              fullWidth
-              name="deadLine"
-              value={newTask.deadLine}
-              onChange={handleChange}
-              type="date"
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Title"
-              variant="outlined"
-              fullWidth
-              name="title"
-              value={newTask.title}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Description"
-              variant="outlined"
-              fullWidth
-              name="description"
-              value={newTask.description}
-              onChange={handleChange}
-              multiline
-              rows={3}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
-              <Select
-                name="status"
-                value={newTask.status}
-                onChange={handleChange}
-                label="Status"
-              >
-                <MenuItem value="On Going">On Going</MenuItem>
-                <MenuItem value="Completed">Completed</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-        <Button
-          sx={{ marginTop: '20px' }}
-          variant="contained"
-          color="primary"
-          onClick={handleCreateTask}
-          startIcon={<AddIcon />}
-          disabled={loading}
-        >
-          {loading ? 'Creating...' : 'Create Task'}
-        </Button>
-      </Box>
-
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-
-      <Typography variant="h6" sx={{ marginBottom: '20px' }}>
-        All Tasks
-      </Typography>
-      <TaskTable tasks={allTasks} loading={loading} />
-    </Box>
-  );
-};
-
-const TaskTable = ({ tasks, loading }) => {
-  if (loading) {
-    return (
-      <Box sx={{ textAlign: 'center', margin: '20px' }}>
-        <CircularProgress />
       </Box>
     );
   }
 
-  if (tasks.length === 0) {
-    return <Typography>No tasks found.</Typography>;
-  }
-
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Title</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Assigned To</TableCell>
-            <TableCell>Assigned By</TableCell>
-            <TableCell>Deadline</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Type</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tasks.map((task) => (
-            <TableRow key={task.id}>
-              <TableCell>{task.title}</TableCell>
-              <TableCell>{task.description}</TableCell>
-              <TableCell>{task.assignedTo}</TableCell>
-              <TableCell>{task.assignedBy}</TableCell>
-              <TableCell>{task.deadLine || 'N/A'}</TableCell>
-              <TableCell>{task.status}</TableCell>
-              <TableCell>{task.type}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div className="p-6">
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
+        <h2 className="text-xl font-bold">Employee Tasks</h2>
+        <Box sx={{ width: '400px' }}>
+          <TextField
+            label="Search by Name or Task"
+            variant="outlined"
+            fullWidth
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </Box>
+      </Box>
+
+      <Paper>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow style={{ backgroundColor: '#f0f0f0' }}>
+                <TableCell style={{ fontWeight: 'bold' }}>ID</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Assigned By</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Assigned To</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Title</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Description</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Deadline</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredTasks.length > 0 ? (
+                filteredTasks
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((task,index) => (
+                    <TableRow key={task.id} onClick={() => handleRowClick(task)} style={{ cursor: 'pointer' }}>
+                      <TableCell>{index+1}</TableCell>
+                      <TableCell>{task.assignedBy}</TableCell>
+                      <TableCell>{task.assignedTo}</TableCell>
+                      <TableCell>{task.title}</TableCell>
+                      <TableCell>
+                        {task.description.split(' ').slice(0, 5).join(' ')}
+                        {task.description.split(' ').length > 5 && '...'}
+                      </TableCell>
+                      <TableCell>{task.deadLine}</TableCell>
+                      <TableCell>{task.status}</TableCell>
+                    </TableRow>
+                  ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    No tasks match the search criteria.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
+      <TablePagination
+        rowsPerPageOptions={[10]}
+        component="div"
+        count={filteredTasks.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+
+      {/* Dialog for Task Details */}
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Task Details</DialogTitle>
+        <DialogContent>
+          {selectedTask && (
+            <>
+              <Typography><strong>ID:</strong> {selectedTask.id}</Typography>
+              <Typography><strong>Assigned By:</strong> {selectedTask.assignedBy}</Typography>
+              <Typography><strong>Assigned To:</strong> {selectedTask.assignedTo}</Typography>
+              <Typography><strong>Title:</strong> {selectedTask.title}</Typography>
+              <Typography><strong>Description:</strong> {selectedTask.description}</Typography>
+              <Typography><strong>Deadline:</strong> {selectedTask.deadLine}</Typography>
+              <Typography><strong>Status:</strong> {selectedTask.status}</Typography>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 };
 

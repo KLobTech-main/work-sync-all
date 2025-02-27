@@ -19,41 +19,56 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const SubAdminAttendance = () => {
-  const pathSegments = window.location.pathname.split("/");
-  const email = pathSegments[3]
-  const adminEmail = localStorage.getItem('email'); // Admin email from localStorage
-  const token = localStorage.getItem('token'); // Token from localStorage
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const email = queryParams.get('email'); // Get employee email from query parameter
+  const adminEmail = localStorage.getItem('email'); // Get admin email from localStorage
+  const token = localStorage.getItem('token'); // Get token from localStorage
 
   const [attendanceData, setAttendanceData] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
   const [selectedDate, setSelectedDate] = useState(''); // Date filter state
 
   useEffect(() => {
-  
+    
     const fetchAttendance = async () => {
+      if (!email || !adminEmail || !token) {
+        setError('Missing required parameters or authentication.');
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
+        setSnackbarOpen(true);
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/attendance/${email}?adminEmail=${adminEmail}`,
-          { headers: { Authorization: token } }
+          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/attendance/${email}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+            params: {
+              adminEmail,
+            },
+          }
         );
-  
+
         setAttendanceData(response.data || []);
       } catch (err) {
-        console.error(" API Error:", err);
+        console.error('Error fetching attendance data:', err);
         setError('Failed to fetch attendance data. Please try again later.');
-      } finally {
+      }  finally {
         setLoading(false);
+        setSnackbarOpen(false);
       }
     };
-  
+
     fetchAttendance();
   }, [email, adminEmail, token]);
-  
+
   // Handle page change
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -76,20 +91,29 @@ const SubAdminAttendance = () => {
   const formatDate = (date) => new Date(date).toLocaleDateString();
   const formatTime = (time) => (time ? new Date(time).toLocaleTimeString() : 'N/A');
 
-  // Snackbar close handler
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+  if(loading){
+    return(
+      <>
+    <Snackbar
+      open={snackbarOpen}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
+      <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+        Loading
+      </Alert>
+    </Snackbar>
+      </>
+    )
+  }
 
   return (
     <div className="p-6">
-      {/* Snackbar for Loading */}
-      <Snackbar open={snackbarOpen} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
-          Loading...
-        </Alert>
-      </Snackbar>
-
       <div className="flex justify-between items-center py-4">
         <Typography variant="h4" gutterBottom>
           Attendance for {email || 'Unknown User'}
@@ -139,7 +163,7 @@ const SubAdminAttendance = () => {
                 ) : (
                   currentPageData.map((attendance, index) => (
                     <TableRow key={attendance.id || index}>
-                      <TableCell>{attendance.id || index + 1}</TableCell>
+                      <TableCell>{ index + 1}</TableCell>
                       <TableCell>{attendance.name}</TableCell>
                       <TableCell>{formatDate(attendance.date)}</TableCell>
                       <TableCell>{formatTime(attendance.punchInTime)}</TableCell>
