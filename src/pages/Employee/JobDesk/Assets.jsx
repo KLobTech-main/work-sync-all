@@ -33,7 +33,7 @@ function Assets() {
       setError('');
       try {
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/assets/?email=${email}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/assets/?email=${email}`,
           {
             headers: { Authorization: token },
      

@@ -41,7 +41,7 @@ const Ticket = () => {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-tickets",
+          "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/all-tickets",
           {
             params: { subAdminEmail: adminEmail },
             headers: { Authorization: token },
@@ -75,7 +75,7 @@ const Ticket = () => {
       );
 
       await axios.patch(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tickets/status`,
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/tickets/status`,
         {},
         {
           params: { adminEmail, ticketId, status },

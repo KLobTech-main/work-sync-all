@@ -42,7 +42,7 @@ const LeaveRequest = () => {
         }
 
         const response = await axios.get(
-          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-leaves",
+          "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/all-leaves",
           {
             headers: { Authorization: token },
             params: { adminEmail: adminEmail },
@@ -95,7 +95,7 @@ const LeaveRequest = () => {
       }
 
       await axios.patch(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/approve/leave",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/approve/leave",
         {
           subAdminEmail:adminEmail,
           leaveId: id,

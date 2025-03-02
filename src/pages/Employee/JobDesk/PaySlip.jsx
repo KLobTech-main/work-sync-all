@@ -31,7 +31,7 @@ function PaySlip() {
     setError("");
     try {
       const response = await axios.get(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/payslip/?email=${email}`,
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/payslip/?email=${email}`,
         {
           headers: { Authorization: token },
         }

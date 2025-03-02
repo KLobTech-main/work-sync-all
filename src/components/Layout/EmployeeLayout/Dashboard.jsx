@@ -35,7 +35,7 @@ const Dashboard = ({ darkMode }) => {
       try {
         const response = await axios.get(
 
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance/status?email=${email}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/attendance/status?email=${email}`,
           {
             headers: { Authorization: token },
           }
@@ -63,7 +63,7 @@ const Dashboard = ({ darkMode }) => {
   const [punchInDisabled, setPunchInDisabled] = useState(false);
 
   const apiBaseUrl =
-    "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance";
+    "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/attendance";
 
   const user = JSON.parse(localStorage.getItem("user"));
   const userName = user ? user.name : "User";
@@ -128,7 +128,7 @@ const Dashboard = ({ darkMode }) => {
     if (email && token) {
       axios
         .get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
           {
             headers: { Authorization: token },
           }

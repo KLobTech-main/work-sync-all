@@ -40,7 +40,7 @@ const Task = () => {
         const adminEmail = localStorage.getItem('email');
         const token = localStorage.getItem('token');
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/all?adminEmail=${adminEmail}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/tasks/all?adminEmail=${adminEmail}`,
           {
             headers: {
               Authorization: token,

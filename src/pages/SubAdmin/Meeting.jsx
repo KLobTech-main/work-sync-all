@@ -39,7 +39,7 @@ const Meeting = () => {
         setSnackbarOpen(true);
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-meetings`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/all-meetings`,
           {
             headers: {
               Authorization: token,

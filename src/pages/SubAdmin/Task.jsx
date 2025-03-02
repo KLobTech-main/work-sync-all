@@ -38,7 +38,7 @@ const Task = () => {
         const adminEmail = localStorage.getItem("email"); // Retrieve email from localStorage
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-tasks?subAdminEmail=${adminEmail}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/all-tasks?subAdminEmail=${adminEmail}`,
           {
             headers: {
               Authorization: token, // Add token to request headers

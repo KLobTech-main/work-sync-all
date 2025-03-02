@@ -64,7 +64,7 @@ const AttendancePage = () => {
         return;
       }
 
-      const apiUrl = `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/attendance/${encodeURIComponent(
+      const apiUrl = `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/attendance/${encodeURIComponent(
         employee.email
       )}?adminEmail=${encodeURIComponent(adminEmail)}`;
 

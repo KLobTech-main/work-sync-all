@@ -46,7 +46,7 @@ const Ticket = () => {
         const adminEmail = localStorage.getItem('email'); // Fetch from localStorage
         const token = localStorage.getItem('token'); // Fetch from localStorage
         const response = await axios.get(
-          'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tickets/',
+          'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/tickets/',
           {
             params: { adminEmail },
             headers: { Authorization: token },

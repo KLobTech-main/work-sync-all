@@ -35,7 +35,7 @@ const EmployeeTable = () => {
       setError("");
 
       const response = await axios.get(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/allUsers",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/allUsers",
         {
           headers: {
             Authorization: token,
@@ -72,7 +72,7 @@ const EmployeeTable = () => {
 
     try {
       await axios.patch(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/approve/access",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/approve/access",
         { subAdminEmail, userEmail, approvedByAdmin },
         { headers: { Authorization: token, "Content-Type": "application/json" } }
       );

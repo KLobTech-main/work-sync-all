@@ -61,7 +61,7 @@ const TaskPage = () => {
         }
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/givenTasks`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/tasks/givenTasks`,
           {
             params: {
               adminEmail: adminEmail,

@@ -42,7 +42,7 @@ function Emergency() {
     setLoading(true);
     axios
       .get(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
         {
           headers: { Authorization: token },
         }
@@ -88,7 +88,7 @@ function Emergency() {
     setLoading(true);
     axios
       .post(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/emergency/contact?email=${email}`,
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/emergency/contact?email=${email}`,
         data,
         {
           headers: {
@@ -125,7 +125,7 @@ function Emergency() {
     setDeleting(contactToDelete);
     axios
       .delete(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/emergency/contact?email=${email}&contactName=${contactToDelete}`,
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/emergency/contact?email=${email}&contactName=${contactToDelete}`,
         {
           headers: { Authorization: token },
         }

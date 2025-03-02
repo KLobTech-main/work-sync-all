@@ -55,7 +55,7 @@ const EmployeeDetails = () => {
         setLoading(true);
         setSnackbarOpen(true);
         const response = await fetch(
-          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/allUsers",
+          "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/allUsers",
           {
             headers: {
               Authorization: token,
@@ -134,7 +134,7 @@ const EmployeeDetails = () => {
 
     axios
       .post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/salary",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/salary",
         {
           adminEmail,
           email: selectedEmployee.email,
@@ -198,7 +198,7 @@ const EmployeeDetails = () => {
 
       // Make the PUT request
       const response = await axios.put(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/user",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/user",
         payload,
         {
           headers: {
@@ -278,7 +278,7 @@ const EmployeeDetails = () => {
 
     axios
       .post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/admin/user/salary",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/admin/user/salary",
         {
           adminEmail,
           userEmail: selectedEmployee.email, // Use the selected employee's email

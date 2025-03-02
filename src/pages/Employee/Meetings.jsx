@@ -46,9 +46,9 @@ const Meetings = () => {
   const token = localStorage.getItem("jwtToken");
 
   const apiBaseUrl =
-    "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/meetings";
+    "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/meetings";
   const usersApiUrl =
-    `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get-all-users-name-email?email=${email} `;
+    `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/get-all-users-name-email?email=${email} `;
 
   const fetchMeetings = async () => {
     if (!email || !token) {

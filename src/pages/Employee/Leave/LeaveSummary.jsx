@@ -37,7 +37,7 @@
         }
 
         const response = await fetch(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/leaves/${encodeURIComponent(
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/leaves/${encodeURIComponent(
             email
           )}`,
           {

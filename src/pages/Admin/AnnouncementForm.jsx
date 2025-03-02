@@ -46,7 +46,7 @@ const AnnouncementManager = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/all-notification?adminEmail=${adminEmail}`,
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/all-notification?adminEmail=${adminEmail}`,
         {
           headers: { Authorization: token },
         }
@@ -79,7 +79,7 @@ const AnnouncementManager = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/createNotification',
+        'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/createNotification',
         requestData,
         {
           headers: {

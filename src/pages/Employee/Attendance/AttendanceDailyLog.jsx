@@ -29,7 +29,7 @@ const DailyLog = () => {
         const email = localStorage.getItem('email');
         const token = localStorage.getItem('jwtToken');
         const response = await fetch(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance/${email}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/attendance/${email}`,
           {
             headers: {
               Authorization: token,

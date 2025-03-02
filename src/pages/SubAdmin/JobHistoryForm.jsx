@@ -65,7 +65,7 @@ const JobHistoryForm = () => {
 
     try {
       const response = await axios.post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/jobHistory/post",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/jobHistory/post",
         requestBody,
         {
           headers: {

@@ -22,7 +22,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
 
     // Fetch the user data from API
     axios
-      .get(`https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`, {
+      .get(`https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`, {
         headers: { Authorization: token },
       })
       .then((response) => {

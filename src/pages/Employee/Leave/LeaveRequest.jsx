@@ -41,7 +41,7 @@ const LeaveRequest = () => {
       setLoading(true);
       setSnackbarOpen(true); 
       const response = await axios.get(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/leaves/pending',
+        'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/leaves/pending',
         {
           params: { adminEmail },
           headers: { Authorization: token },
@@ -72,7 +72,7 @@ const LeaveRequest = () => {
 
     try {
       await axios.patch(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/approve/leave',
+        'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/approve/leave',
         {
           adminEmail,
           leaveId,

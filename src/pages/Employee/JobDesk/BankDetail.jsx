@@ -47,7 +47,7 @@ function BankDetail() {
       setLoading(true);
       axios
         .get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
           {
             headers: {
               Authorization: token,
@@ -93,7 +93,7 @@ function BankDetail() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/bankDetails?email=${email}`,
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/bankDetails?email=${email}`,
         requestData,
         {
           headers: {

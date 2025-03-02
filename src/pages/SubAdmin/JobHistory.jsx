@@ -33,7 +33,7 @@ const JobHistory = () => {
 
       try {
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/all-jobHistory`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/all-jobHistory`,
           {
             params: { subAdminEmail: adminEmail },
             headers: {

@@ -23,7 +23,7 @@ const UserAnnouncementTable = () => {
       const adminEmail = localStorage.getItem("email");
       const authToken = localStorage.getItem("token");
       const apiUrl =
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/notification";
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/notification";
 
       if (!adminEmail || !authToken) {
         setError("User email or authentication token is missing.");
@@ -54,7 +54,7 @@ const UserAnnouncementTable = () => {
   const toggleReadStatus = async (id, currentStatus) => {
     const adminEmail = localStorage.getItem("email");
     const authToken = localStorage.getItem("token");
-    const apiUrl = `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/notification/${id}/read`;
+    const apiUrl = `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/notification/${id}/read`;
 
     if (!adminEmail || !authToken) {
       alert("User email or authentication token is missing.");

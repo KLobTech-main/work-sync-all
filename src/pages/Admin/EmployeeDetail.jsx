@@ -45,7 +45,7 @@ const EmployeeDetails = () => {
       setLoading(true);
       setSnackbarOpen(true); 
         const response = await fetch(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/get-all-users?adminEmail=${encodeURIComponent(email)}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/get-all-users?adminEmail=${encodeURIComponent(email)}`,
           {
             headers: {
               'Authorization': token,

@@ -45,7 +45,7 @@ const SubAdminAttendance = () => {
         setLoading(true);
         setSnackbarOpen(true);
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/attendance/${email}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/attendance/${email}`,
           {
             headers: {
               Authorization: token,

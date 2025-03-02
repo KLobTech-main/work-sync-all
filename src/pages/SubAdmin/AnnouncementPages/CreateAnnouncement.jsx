@@ -31,7 +31,7 @@ const AnnouncementForm = () => {
         setLoading(true); // Show loading state
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/get-all-users`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/get-all-users`,
           {
             headers: {
               Authorization: token,
@@ -93,7 +93,7 @@ const AnnouncementForm = () => {
       setLoading(true);
 
       const response = await axios.post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/notification",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/notification",
         requestData,
         {
           headers: {

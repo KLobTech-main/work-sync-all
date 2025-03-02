@@ -40,7 +40,7 @@ const AnnouncementForm = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/createNotification",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/createNotification",
         requestData,
         {
           headers: {

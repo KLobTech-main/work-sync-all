@@ -37,7 +37,7 @@ const TaskPage = () => {
       const adminEmail = localStorage.getItem("email");
       const authToken = localStorage.getItem("token");
       const employeeEmail = employee.email;
-      const apiUrl = `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/get/email`;
+      const apiUrl = `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/tasks/get/email`;
 
       if (!adminEmail || !authToken || !employeeEmail) {
         setError(

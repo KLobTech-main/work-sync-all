@@ -66,7 +66,7 @@ const AttendancePage = () => {
         console.log(`Admin Email: ${adminEmail}`);
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/attendance/${employeeEmail}?adminEmail=${adminEmail}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/attendance/${employeeEmail}?adminEmail=${adminEmail}`,
           { headers: { Authorization: authToken } }
         );
 

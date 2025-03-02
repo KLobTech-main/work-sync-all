@@ -38,7 +38,7 @@ const LeaveRequest = () => {
 
       try {
         const response = await axios.get(
-          'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/leaves/pending',
+          'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/leaves/pending',
           {
             params: { adminEmail },
             headers: { Authorization: token }, // No Bearer prefix
@@ -65,7 +65,7 @@ const LeaveRequest = () => {
 
     try {
       await axios.patch(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/approve/leave',
+        'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/approve/leave',
         {
           adminEmail,
           leaveId,

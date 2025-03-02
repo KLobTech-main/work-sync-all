@@ -53,7 +53,7 @@ const SubAdminDetails = () => {
         const adminEmail = localStorage.getItem('email');
         const token = localStorage.getItem('token');
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/subAdmins?adminEmail=${adminEmail}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/subAdmins?adminEmail=${adminEmail}`,
           {
             headers: {
               Authorization: token,
@@ -97,7 +97,7 @@ const SubAdminDetails = () => {
       };
   
       const response = await axios.patch(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/approve/access',
+        'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/approve/access',
         requestBody,
         {
           headers: {

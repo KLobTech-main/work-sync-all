@@ -23,7 +23,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/login",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/login",
         {
           subAdminEmail,
           subAdminPassword,

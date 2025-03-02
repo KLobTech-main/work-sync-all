@@ -22,7 +22,7 @@ const UserAnnouncementTable = () => {
       const userEmail = localStorage.getItem("email");
       const authToken = localStorage.getItem("token");
       const apiUrl =
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/notification/type";
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/notification/type";
 
       if (!userEmail || !authToken) {
         setError("User email or authentication token is missing.");

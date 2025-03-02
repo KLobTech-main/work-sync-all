@@ -43,7 +43,7 @@ function MeetingForm() {
     setLoadingParticipants(true);
     axios
       .get(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/allUsers?adminEmail=${encodeURIComponent(
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/allUsers?adminEmail=${encodeURIComponent(
           adminEmail
         )}`,
         {
@@ -96,7 +96,7 @@ function MeetingForm() {
 
     axios
     .post(
-      `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/meetings?adminEmail=${encodeURIComponent(
+      `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/meetings?adminEmail=${encodeURIComponent(
         adminEmail
       )}`,
       meetingData,

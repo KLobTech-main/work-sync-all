@@ -43,7 +43,7 @@ const ProgressBar = () => {
 
       try {
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance/monthly/${email}/${currentYear}/${currentMonth}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/attendance/monthly/${email}/${currentYear}/${currentMonth}`,
           {
             headers: { Authorization: token },
           }

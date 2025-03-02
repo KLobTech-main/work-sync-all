@@ -45,7 +45,7 @@ const Dashboard = ({ darkMode }) => {
   const [lunchEndTime, setLunchEndTime] = useState(localStorage.getItem("lunchEndTime"));
 
   const apiBaseUrl =
-    "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance";
+    "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/attendance";
   const email = localStorage.getItem("email");
   const token = localStorage.getItem("jwtToken");
   
@@ -118,7 +118,7 @@ const Dashboard = ({ darkMode }) => {
     if (email && token) {
       axios
         .get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
           {
             headers: { Authorization: token },
           }

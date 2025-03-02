@@ -43,7 +43,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/login',
+        'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/login',
         formData
       );
 
@@ -94,7 +94,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/reset/password',
+        'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/reset/password',
         resetPasswordData,
         {
           headers: {

@@ -35,7 +35,7 @@ function Summary() {
 
     if (email && token) {
       fetch(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance/${email}`,
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/attendance/${email}`,
         {
           headers: {
             Authorization: token,
