@@ -138,9 +138,9 @@ const SubAdminDetails = () => {
 
   const handleMenuAction = (action) => {
     if (action === 'Leave') {
-      navigate(`/subadmin/${selectedAdminId}/leave?email=${selectedAdminEmail}`);
+      navigate(`/admin/${selectedAdminId}/leave?email=${selectedAdminEmail}`);
     } else if (action === 'Attendance') {
-      navigate(`/subadmin/${selectedAdminId}/attendance?email=${selectedAdminEmail}`);
+      navigate(`/admin/${selectedAdminId}/attendance?email=${selectedAdminEmail}`);
     } else if (action === 'showAllInfoedit') {
       setShowAllInfoDialogOpen(true);
     }
