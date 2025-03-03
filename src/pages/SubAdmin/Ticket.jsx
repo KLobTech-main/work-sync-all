@@ -17,6 +17,7 @@ import {
   TablePagination,
   Button,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Ticket = () => {
   const [tickets, setTickets] = useState([]);
@@ -38,7 +39,7 @@ const Ticket = () => {
         const adminEmail = localStorage.getItem("email"); // Fetch from localStorage
         const token = localStorage.getItem("token"); // Fetch from localStorage
         const response = await axios.get(
-          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tickets/",
+          `${baseUrl}/admin/api/tickets/`,
           {
             params: { adminEmail },
             headers: { Authorization: token },
@@ -103,7 +104,7 @@ const Ticket = () => {
       );
 
       await axios.patch(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tickets/status?adminEmail=${adminEmail}&ticketId=${ticketId}&status=${status}`,
+        `${baseUrl}/admin/api/tickets/status?adminEmail=${adminEmail}&ticketId=${ticketId}&status=${status}`,
         {},
         {
           headers: {

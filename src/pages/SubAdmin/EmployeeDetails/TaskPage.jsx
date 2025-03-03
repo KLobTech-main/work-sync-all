@@ -18,6 +18,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TaskPage = () => {
   const { state } = useLocation(); // Fetching the employee data passed from the previous page
@@ -37,7 +38,7 @@ const TaskPage = () => {
       const adminEmail = localStorage.getItem("email");
       const authToken = localStorage.getItem("token");
       const employeeEmail = employee.email;
-      const apiUrl = `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/get/email`;
+      const apiUrl = `${baseUrl}/admin/api/tasks/get/email`;
 
       if (!adminEmail || !authToken || !employeeEmail) {
         setError(

@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const SubAdminLeave = () => {
   const location = useLocation();
@@ -51,7 +52,7 @@ const SubAdminLeave = () => {
         }
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/leaves/${email}`,
+          `${baseUrl}/admin/api/leaves/${email}`,
           {
             headers: {
               Authorization: token,

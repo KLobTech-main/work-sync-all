@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Chip } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const formatTime = (date) => {
   let hours = date.getHours();
@@ -45,7 +46,7 @@ const Dashboard = ({ darkMode }) => {
   const [lunchEndTime, setLunchEndTime] = useState(localStorage.getItem("lunchEndTime"));
 
   const apiBaseUrl =
-    "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance";
+    `${baseUrl}/api/attendance`;
   const email = localStorage.getItem("email");
   const token = localStorage.getItem("jwtToken");
   
@@ -118,7 +119,7 @@ const Dashboard = ({ darkMode }) => {
     if (email && token) {
       axios
         .get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
+          `${baseUrl}/api/users/get/user?email=${email}`,
           {
             headers: { Authorization: token },
           }

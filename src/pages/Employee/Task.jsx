@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { AddCircleOutline as AddIcon } from '@mui/icons-material';
 import axios from 'axios';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Task = () => {
   const [newTask, setNewTask] = useState({
@@ -45,7 +46,7 @@ const Task = () => {
 
     try {
       const response = await axios.get(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get-all-users',
+        `${baseUrl}/api/users/get-all-users`,
         {
           headers: { Authorization: token },
           params: { email },
@@ -69,11 +70,11 @@ const Task = () => {
       const [assignedByResponse, assignedToResponse] = await Promise.all([
 
         axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tasks/get-assigned-tasks`,
+          `${baseUrl}/api/tasks/get-assigned-tasks`,
           { headers: { Authorization: token }, params: { email } }
         ),
         axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tasks/get-given-tasks`,
+          `${baseUrl}/api/tasks/get-given-tasks`,
           { headers: { Authorization: token }, params: { assignedTo: email } }
         ),
       ]);
@@ -108,7 +109,7 @@ const Task = () => {
 
     try {
       await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tasks/create-task',
+        `${baseUrl}/api/tasks/create-task`,
         { ...newTask, assignedBy: email },
         { headers: { Authorization: token } }
       );

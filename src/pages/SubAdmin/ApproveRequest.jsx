@@ -13,6 +13,7 @@ import {
   Switch,
 } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const ApproveRequest = () => {
   const [employees, setEmployees] = useState([]);
@@ -30,7 +31,7 @@ const ApproveRequest = () => {
         setSnackbarOpen(true);
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/get-all-users`,
+          `${baseUrl}/admin/api/get-all-users`,
           {
             headers: {
               Authorization: token,
@@ -58,7 +59,7 @@ const ApproveRequest = () => {
 
     try {
       await axios.patch(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/approve/access",
+        `${baseUrl}/admin-sub/approve/access`,
         {
           adminEmail,
           email,

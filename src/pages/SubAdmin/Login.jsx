@@ -10,6 +10,8 @@ import {
   Alert,
 } from "@mui/material";
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const Login = () => {
   const [subAdminEmail, setEmail] = useState("");
   const [subAdminPassword, setPassword] = useState("");
@@ -23,7 +25,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/login",
+        `${baseUrl}/admin-sub/login`,
         {
           subAdminEmail,
           subAdminPassword,

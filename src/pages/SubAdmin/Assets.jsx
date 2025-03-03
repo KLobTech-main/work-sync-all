@@ -9,6 +9,7 @@ import {
   Box,
   Paper,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Assets = () => {
   const [formData, setFormData] = useState({
@@ -49,7 +50,7 @@ const Assets = () => {
 
     try {
       const response = await axios.post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/assets/create",
+        `${baseUrl}/admin/api/assets/create`,
         data,
         {
           headers: {

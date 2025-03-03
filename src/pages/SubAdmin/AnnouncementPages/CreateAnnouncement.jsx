@@ -10,6 +10,7 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const AnnouncementForm = () => {
   const [title, setTitle] = useState("");
@@ -31,7 +32,7 @@ const AnnouncementForm = () => {
         setLoading(true); // Show loading state
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/get-all-users`,
+          `${baseUrl}/admin/api/get-all-users`,
           {
             headers: {
               Authorization: token,
@@ -93,7 +94,7 @@ const AnnouncementForm = () => {
       setLoading(true);
 
       const response = await axios.post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/notification",
+        `${baseUrl}/admin/api/notification`,
         requestData,
         {
           headers: {

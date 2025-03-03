@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import { AddCircleOutline as AddIcon } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Meetings = () => {
   const [hostMeetings, setHostMeetings] = useState([]);
@@ -46,9 +47,9 @@ const Meetings = () => {
   const token = localStorage.getItem("jwtToken");
 
   const apiBaseUrl =
-    "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/meetings";
+    `${baseUrl}/api/meetings`;
   const usersApiUrl =
-    `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get-all-users-name-email?email=${email} `;
+    `${baseUrl}/api/users/get-all-users-name-email?email=${email}`;
 
   const fetchMeetings = async () => {
     if (!email || !token) {

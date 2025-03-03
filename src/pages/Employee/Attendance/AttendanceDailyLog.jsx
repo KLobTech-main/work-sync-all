@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker } from '@mui/lab';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const DailyLog = () => {
   const [logData, setLogData] = useState([]);
@@ -29,7 +30,7 @@ const DailyLog = () => {
         const email = localStorage.getItem('email');
         const token = localStorage.getItem('jwtToken');
         const response = await fetch(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance/${email}`,
+          `${baseUrl}/api/attendance/${email}`,
           {
             headers: {
               Authorization: token,

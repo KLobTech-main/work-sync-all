@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { AttachMoney, CalendarToday, Work } from "@mui/icons-material";
 import axios from 'axios';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Profile() {
   const [userData, setUserData] = useState(null);
@@ -31,7 +32,7 @@ function Profile() {
       }
 
       axios
-        .get(`https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`, {
+        .get(`${baseUrl}/api/users/get/user?email=${email}`, {
           headers: { Authorization: token }
         })
         .then((response) => {

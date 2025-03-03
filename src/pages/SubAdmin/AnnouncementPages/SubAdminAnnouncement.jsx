@@ -12,6 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const UserAnnouncementTable = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -23,7 +24,7 @@ const UserAnnouncementTable = () => {
       const adminEmail = localStorage.getItem("email");
       const authToken = localStorage.getItem("token");
       const apiUrl =
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/notification";
+        `${baseUrl}/admin/api/notification`;
 
       if (!adminEmail || !authToken) {
         setError("User email or authentication token is missing.");
@@ -54,7 +55,7 @@ const UserAnnouncementTable = () => {
   const toggleReadStatus = async (id, currentStatus) => {
     const adminEmail = localStorage.getItem("email");
     const authToken = localStorage.getItem("token");
-    const apiUrl = `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/notification/${id}/read`;
+    const apiUrl = `${baseUrl}/admin/api/notification/${id}/read`;
 
     if (!adminEmail || !authToken) {
       alert("User email or authentication token is missing.");

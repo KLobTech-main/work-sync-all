@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, IconButton, Avatar, CircularProgress, Butt
 import { LightMode, DarkMode, Notifications, Language } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // To handle redirect after logout
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Navbar = ({ darkMode, setDarkMode }) => {
   const [userData, setUserData] = useState(null);
@@ -22,7 +23,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
 
     // Fetch the user data from API
     axios
-      .get(`https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`, {
+      .get(`${baseUrl}/api/users/get/user?email=${email}`, {
         headers: { Authorization: token },
       })
       .then((response) => {

@@ -20,6 +20,7 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TaskPage = () => {
   const { state } = useLocation(); // Fetching the employee data passed from the previous page
@@ -47,7 +48,7 @@ const TaskPage = () => {
         }
 
         const response = await fetch(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/get/email?adminEmail=${adminEmail}&email=${employee.email}`,
+          `${baseUrl}/admin/api/tasks/get/email?adminEmail=${adminEmail}&email=${employee.email}`,
           {
             headers: {
               Authorization: token,

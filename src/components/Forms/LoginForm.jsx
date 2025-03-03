@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextField, CircularProgress, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/login',
+        `${baseUrl}/api/users/login`,
         formData
       );
 
@@ -94,7 +95,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/reset/password',
+        `${baseUrl}/api/users/reset/password`,
         resetPasswordData,
         {
           headers: {

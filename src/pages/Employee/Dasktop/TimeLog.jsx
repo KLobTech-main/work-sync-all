@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Utility function to format time
 const formatTime = (minutes) => {
@@ -43,7 +44,7 @@ const ProgressBar = () => {
 
       try {
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance/monthly/${email}/${currentYear}/${currentMonth}`,
+          `${baseUrl}/api/attendance/monthly/${email}/${currentYear}/${currentMonth}`,
           {
             headers: { Authorization: token },
           }

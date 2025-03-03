@@ -17,6 +17,8 @@ import {
   Button,
 } from "@mui/material";
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const Task = () => {
   const [tasks, setTasks] = useState([]); // State for tasks
   const [error, setError] = useState(null); // State for error
@@ -37,7 +39,7 @@ const Task = () => {
         const adminEmail = localStorage.getItem("email"); // Retrieve email from localStorage
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/all?adminEmail=${adminEmail}`,
+          `${baseUrl}/admin/api/tasks/all?adminEmail=${adminEmail}`,
           {
             headers: {
               Authorization: token, // Add token to request headers

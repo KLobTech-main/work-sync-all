@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Box, TextField, Button, Typography, Paper, Snackbar, Alert } from '@mui/material';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/login',
+        `${baseUrl}/admin/api/login`,
         {
           email,
           password,

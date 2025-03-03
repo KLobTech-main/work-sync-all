@@ -11,6 +11,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const UserAnnouncementTable = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -22,7 +23,7 @@ const UserAnnouncementTable = () => {
       const userEmail = localStorage.getItem("email");
       const authToken = localStorage.getItem("token");
       const apiUrl =
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/notification/type";
+        `${baseUrl}/api/notification/type`;
 
       if (!userEmail || !authToken) {
         setError("User email or authentication token is missing.");

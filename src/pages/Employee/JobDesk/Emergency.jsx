@@ -17,6 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import InnerSidbar from "../../../components/Layout/EmployeeLayout/InnerSidbar";
 import Profile from "../../../components/Layout/EmployeeLayout/Profile";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Emergency() {
   const [open, setOpen] = useState(false);
@@ -42,7 +43,7 @@ function Emergency() {
     setLoading(true);
     axios
       .get(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
+        `${baseUrl}/api/users/get/user?email=${email}`,
         {
           headers: { Authorization: token },
         }
@@ -88,7 +89,7 @@ function Emergency() {
     setLoading(true);
     axios
       .post(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/emergency/contact?email=${email}`,
+        `${baseUrl}/api/users/emergency/contact?email=${email}`,
         data,
         {
           headers: {
@@ -125,7 +126,7 @@ function Emergency() {
     setDeleting(contactToDelete);
     axios
       .delete(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/emergency/contact?email=${email}&contactName=${contactToDelete}`,
+        `${baseUrl}/api/users/emergency/contact?email=${email}&contactName=${contactToDelete}`,
         {
           headers: { Authorization: token },
         }

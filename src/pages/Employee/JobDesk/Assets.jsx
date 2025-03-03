@@ -18,6 +18,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Profile from '../../../components/Layout/EmployeeLayout/Profile';
 import InnerSidbar from '../../../components/Layout/EmployeeLayout/InnerSidbar';
 import axios from 'axios';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Assets() {
   const [assets, setAssets] = useState([]); 
@@ -33,7 +34,7 @@ function Assets() {
       setError('');
       try {
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/assets/?email=${email}`,
+          `${baseUrl}/api/assets/?email=${email}`,
           {
             headers: { Authorization: token },
      

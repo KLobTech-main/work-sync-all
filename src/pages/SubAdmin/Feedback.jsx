@@ -14,6 +14,7 @@ import {
   TablePagination,
 } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const FeedbackTable = () => {
   const [feedbackData, setFeedbackData] = useState([]);
@@ -34,7 +35,7 @@ const FeedbackTable = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/feedback/all`,
+          `${baseUrl}/admin/api/feedback/all`,
           {
             headers: {
               Authorization: authToken,

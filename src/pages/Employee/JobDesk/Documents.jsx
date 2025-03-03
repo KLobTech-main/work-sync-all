@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Documents() {
   const [documents, setDocuments] = useState([]);
@@ -42,7 +43,7 @@ function Documents() {
     setError('');
     try {
       const response = await axios.get(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/documents/?email=${email}`,
+        `${baseUrl}/api/documents/?email=${email}`,
         {
           headers: { Authorization: token },
         }
@@ -66,7 +67,7 @@ function Documents() {
     setUploading(true);
     try {
       await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/documents/upload',
+        `${baseUrl}/api/documents/upload`,
         formData,
         {
           headers: {

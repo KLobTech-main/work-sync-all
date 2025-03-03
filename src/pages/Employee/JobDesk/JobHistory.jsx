@@ -12,6 +12,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { SentimentDissatisfied } from "@mui/icons-material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function JobHistory() {
   const [jobHistory, setJobHistory] = useState([]);
@@ -26,7 +27,7 @@ function JobHistory() {
     setError("");
     try {
       const response = await axios.get(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/jobHistory/?email=${email}`,
+        `${baseUrl}/api/jobHistory/?email=${email}`,
         {
           headers: { Authorization: token },
         }

@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const SubAdminAttendance = () => {
   const location = useLocation();
@@ -45,7 +46,7 @@ const SubAdminAttendance = () => {
         setLoading(true);
         setSnackbarOpen(true);
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/attendance/${email}`,
+          `${baseUrl}/admin/api/attendance/${email}`,
           {
             headers: {
               Authorization: token,

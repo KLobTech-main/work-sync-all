@@ -5,6 +5,8 @@ import InnerSidbar from '../../../components/Layout/EmployeeLayout/InnerSidbar';
 import Profile from '../../../components/Layout/EmployeeLayout/Profile';
 import { useState, useEffect } from "react";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 function SalaryOverview() {
   
   const token = localStorage.getItem('jwtToken');
@@ -15,7 +17,7 @@ function SalaryOverview() {
   useEffect(() => {
     const fetchSalaryOverview = async () => {
       try {
-        const response = await axios.get(`https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`, {
+        const response = await axios.get(`${baseUrl}/api/users/get/user?email=${email}`, {
           headers: {
             Authorization: token,
           }

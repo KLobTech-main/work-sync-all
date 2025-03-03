@@ -24,6 +24,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const EmployeeDetails = () => {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
@@ -58,7 +60,7 @@ const EmployeeDetails = () => {
         setLoading(true);
         setSnackbarOpen(true);
         const response = await fetch(
-          `http://localhost:8080/admin/api/get-all-users?adminEmail=${encodeURIComponent(
+          `${baseUrl}/admin/api/get-all-users?adminEmail=${encodeURIComponent(
             adminEmail
           )}`,
           {
@@ -134,7 +136,7 @@ const EmployeeDetails = () => {
 
     axios
       .post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/salary",
+        `${baseUrl}/admin/api/salary`,
         {
           adminEmail,
           email: selectedEmployee.email,
@@ -198,7 +200,7 @@ const EmployeeDetails = () => {
 
       // Make the PUT request
       const response = await axios.put(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/user",
+        `${baseUrl}/admin-sub/user`,
         payload,
         {
           headers: {
@@ -274,7 +276,7 @@ const EmployeeDetails = () => {
 
     axios
       .post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/admin/user/salary",
+        `${baseUrl}/api/admin/user/salary`,
         {
           adminEmail,
           userEmail: selectedEmployee.email, // Use the selected employee's email

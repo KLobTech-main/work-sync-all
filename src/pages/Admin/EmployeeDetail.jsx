@@ -23,6 +23,7 @@ import {
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const EmployeeDetails = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const EmployeeDetails = () => {
       setLoading(true);
       setSnackbarOpen(true); 
         const response = await fetch(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/get-all-users?adminEmail=${encodeURIComponent(email)}`,
+          `${baseUrl}/admin/api/get-all-users?adminEmail=${encodeURIComponent(email)}`,
           {
             headers: {
               'Authorization': token,

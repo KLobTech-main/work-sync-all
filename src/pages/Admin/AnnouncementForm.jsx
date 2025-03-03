@@ -13,6 +13,7 @@ import {
   CardContent,
   CardActions,
 } from '@mui/material';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const AnnouncementForm = () => {
   const [title, setTitle] = useState('');
@@ -47,7 +48,7 @@ const AnnouncementForm = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/createNotification',
+        `${baseUrl}/admin/api/createNotification`,
         requestData,
         {
           headers: {

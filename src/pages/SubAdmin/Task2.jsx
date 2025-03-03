@@ -16,6 +16,7 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Task = () => {
   const [tasks, setTasks] = useState([]); // State for tasks
@@ -36,7 +37,7 @@ const Task = () => {
         //   "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleGFtcGxlQGNvbXBhbnkuY29tIiwiaWF0IjoxNzM1MTkzNDQyLCJleHAiOjE3MzUyMjk0NDJ9.TFMeMTNRUfeqIxxwTgAt-J2PCXXO4nLz22AeS4SsuNg"; // Retrieve token from localStorage
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/tasks/all?adminEmail=${adminEmail}`,
+          `${baseUrl}/admin/api/tasks/all?adminEmail=${adminEmail}`,
           {
             headers: {
               Authorization: token, // Add token to request headers

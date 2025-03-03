@@ -24,6 +24,7 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const SubAdminDetails = () => {
   const navigate = useNavigate();
@@ -104,7 +105,7 @@ const SubAdminDetails = () => {
         const adminEmail = localStorage.getItem('email');
         const token = localStorage.getItem('token');
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/subAdmin/getSubAdmin?adminEmail=${adminEmail}`,
+          `${baseUrl}/admin/api/subAdmin/getSubAdmin?adminEmail=${adminEmail}`,
           {
             headers: {
               Authorization: token,

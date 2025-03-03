@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { Add, MoreVert } from "@mui/icons-material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function LeaveRequest() {
   const [leaveData, setLeaveData] = useState([]);
@@ -107,7 +108,7 @@ function LeaveRequest() {
     if (email && token) {
       axios
         .get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/leaves/${email}`,
+          `${baseUrl}/api/leaves/${email}`,
           {
             headers: { Authorization: token },
           }
@@ -189,7 +190,7 @@ function LeaveRequest() {
     if (email && token) {
       axios
         .post(
-          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/leaves",
+          `${baseUrl}/api/leaves`,
           {
             email,
             reason,

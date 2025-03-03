@@ -17,6 +17,7 @@ import {
   Alert,
   Button,
 } from '@mui/material';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LeavePage = () => {
   const { state } = useLocation(); // Fetching the employee data passed from the previous page
@@ -47,7 +48,7 @@ const LeavePage = () => {
         }
 
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/leaves/${employee.email}?adminEmail=${adminEmail}`,
+          `${baseUrl}/admin/api/leaves/${employee.email}?adminEmail=${adminEmail}`,
           {
             headers: { Authorization: token },
           }

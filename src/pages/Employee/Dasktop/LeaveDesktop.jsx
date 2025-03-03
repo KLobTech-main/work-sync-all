@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LeaveBalance = ({ darkMode }) => { // Destructure `darkMode` correctly
   const [leaves, setLeaves] = useState({});
@@ -17,7 +18,7 @@ const LeaveBalance = ({ darkMode }) => { // Destructure `darkMode` correctly
 
       try {
         const response = await axios.get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
+          `${baseUrl}/api/users/get/user?email=${email}`,
           {
             headers: {
               Authorization: token,

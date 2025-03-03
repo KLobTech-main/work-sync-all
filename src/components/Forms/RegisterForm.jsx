@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextField, CircularProgress, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const RegisterForm = () => {
 
     try {
       const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/register',
+        `${baseUrl}/api/users/register`,
         formData
       );
 

@@ -19,6 +19,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LeaveRequest = () => {
   const [leaveData, setLeaveData] = useState([]);
@@ -43,7 +44,7 @@ const LeaveRequest = () => {
         }
 
         const response = await axios.get(
-          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/leaves/allLeaves",
+          `${baseUrl}/admin/api/leaves/allLeaves`,
           {
             headers: {
               // "Content-Type": "application/json",
@@ -98,7 +99,7 @@ const LeaveRequest = () => {
         updatedLeave.status === "APPROVED" ? "Rejected" : "APPROVED";
 
       await axios.patch(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin-sub/approve/leave",
+        `${baseUrl}/admin-sub/approve/leave`,
         {
           adminEmail,
           leaveId: id,

@@ -20,6 +20,7 @@ import {
   Box,
 } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function BankDetail() {
   const [open, setOpen] = useState(false);
@@ -47,7 +48,7 @@ function BankDetail() {
       setLoading(true);
       axios
         .get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
+          `${baseUrl}/api/users/get/user?email=${email}`,
           {
             headers: {
               Authorization: token,
@@ -93,7 +94,7 @@ function BankDetail() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/bankDetails?email=${email}`,
+        `${baseUrl}/api/users/bankDetails?email=${email}`,
         requestData,
         {
           headers: {

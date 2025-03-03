@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { AddCircleOutline as AddIcon } from '@mui/icons-material';
 import axios from 'axios';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Tickets = () => {
   const [newTicket, setNewTicket] = useState({
@@ -32,7 +33,7 @@ const Tickets = () => {
   useEffect(() => {
     if (email) {
       axios
-        .get(`https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tickets/${email}`, {
+        .get(`${baseUrl}/api/tickets/${email}`, {
           headers: {
             Authorization: token,
           },
@@ -64,7 +65,7 @@ const Tickets = () => {
 
     try {
       const response = await axios.post(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/tickets',
+        `${baseUrl}/api/tickets`,
         ticketData,
         {
          headers: {

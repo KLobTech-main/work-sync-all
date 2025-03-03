@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const JobHistoryForm = () => {
   // State to store form values
@@ -65,7 +66,7 @@ const JobHistoryForm = () => {
 
     try {
       const response = await axios.post(
-        "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/jobHistory/post",
+        `${baseUrl}/admin/api/jobHistory/post`,
         requestBody,
         {
           headers: {

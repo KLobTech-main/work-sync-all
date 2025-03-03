@@ -18,6 +18,7 @@ import {
   InputLabel,
   CircularProgress,
 } from '@mui/material';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LeaveRequest = () => {
   const [leaveData, setLeaveData] = useState([]);
@@ -38,7 +39,7 @@ const LeaveRequest = () => {
 
       try {
         const response = await axios.get(
-          'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/leaves/pending',
+          `${baseUrl}/admin/api/leaves/pending`,
           {
             params: { adminEmail },
             headers: { Authorization: token }, // No Bearer prefix
@@ -65,7 +66,7 @@ const LeaveRequest = () => {
 
     try {
       await axios.patch(
-        'https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/approve/leave',
+        `${baseUrl}/admin/api/approve/leave`,
         {
           adminEmail,
           leaveId,

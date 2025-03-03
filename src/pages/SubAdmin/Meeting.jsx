@@ -14,6 +14,7 @@ import {
   Alert,
   TablePagination,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Meeting = () => {
   const [meetings, setMeetings] = useState([]); // State for meetings
@@ -35,7 +36,7 @@ const Meeting = () => {
         setLoading(true);
         setSnackbarOpen(true);
         const response = await axios.get(
-          "https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/meetings/get-all",
+          `${baseUrl}/admin/api/meetings/get-all`,
           {
             headers: {
               Authorization: token,

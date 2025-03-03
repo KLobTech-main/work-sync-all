@@ -15,6 +15,7 @@ import {
   TablePagination,
   Button,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Utility function to format date
 const formatDate = (dateString) => {
@@ -60,7 +61,7 @@ const AttendancePage = () => {
         return;
       }
 
-      const apiUrl = `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/admin/api/attendance/${employeeEmail}`;
+      const apiUrl = `${baseUrl}/admin/api/attendance/${employeeEmail}`;
 
       try {
         const response = await axios.get(apiUrl, {

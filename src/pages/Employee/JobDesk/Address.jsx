@@ -11,6 +11,7 @@ import {
 import InnerSidbar from "../../../components/Layout/EmployeeLayout/InnerSidbar";
 import Profile from "../../../components/Layout/EmployeeLayout/Profile";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Address() {
   const [open, setOpen] = useState(false);
@@ -28,7 +29,7 @@ function Address() {
       setLoading(true);
       axios
         .get(
-          `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/get/user?email=${email}`,
+          `${baseUrl}/api/users/get/user?email=${email}`,
           {
             headers: {
               Authorization: token,
@@ -76,7 +77,7 @@ function Address() {
     setLoading(true);
     axios
       .post(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/users/address?email=${email}`,
+        `${baseUrl}/api/users/address?email=${email}`,
         data,
         {
           headers: {

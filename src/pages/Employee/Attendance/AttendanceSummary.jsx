@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -35,7 +36,7 @@ function Summary() {
 
     if (email && token) {
       fetch(
-        `https://work-sync-gbf0h9d5amcxhwcr.canadacentral-01.azurewebsites.net/api/attendance/${email}`,
+        `${baseUrl}/api/attendance/${email}`,
         {
           headers: {
             Authorization: token,
