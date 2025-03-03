@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import { AddCircleOutline as AddIcon } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Meetings = () => {
   const [hostMeetings, setHostMeetings] = useState([]);

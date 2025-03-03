@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { AttachMoney, CalendarToday, Work } from "@mui/icons-material";
 import axios from 'axios';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Profile() {
   const [userData, setUserData] = useState(null);

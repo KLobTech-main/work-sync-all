@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Utility function to format time
 const formatTime = (minutes) => {

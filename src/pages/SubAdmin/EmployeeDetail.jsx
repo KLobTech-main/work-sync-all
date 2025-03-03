@@ -24,6 +24,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const EmployeeDetails = () => {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState({ data: [] });

@@ -18,6 +18,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LeaveRequest = () => {
   const [leaveData, setLeaveData] = useState([]);

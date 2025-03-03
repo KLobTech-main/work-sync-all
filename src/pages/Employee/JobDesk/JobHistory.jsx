@@ -12,6 +12,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { SentimentDissatisfied } from "@mui/icons-material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function JobHistory() {
   const [jobHistory, setJobHistory] = useState([]);

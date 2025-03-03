@@ -12,6 +12,7 @@ import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 import axios from "axios";
 import InnerSidebar from "../../../components/Layout/EmployeeLayout/InnerSidbar";
 import Profile from "../../../components/Layout/EmployeeLayout/Profile";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function PaySlip() {
   const [payslipData, setPayslipData] = useState([]);

@@ -18,6 +18,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Profile from '../../../components/Layout/EmployeeLayout/Profile';
 import InnerSidbar from '../../../components/Layout/EmployeeLayout/InnerSidbar';
 import axios from 'axios';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Assets() {
   const [assets, setAssets] = useState([]); 

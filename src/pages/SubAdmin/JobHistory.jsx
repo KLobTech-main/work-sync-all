@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const JobHistory = () => {
   const [jobHistory, setJobHistory] = useState([]);

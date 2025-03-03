@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker } from '@mui/lab';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const DailyLog = () => {
   const [logData, setLogData] = useState([]);

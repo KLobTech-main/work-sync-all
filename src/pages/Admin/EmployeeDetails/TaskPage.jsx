@@ -25,6 +25,7 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TaskPage = () => {
   const { state } = useLocation(); // Fetching the employee data passed from the previous page

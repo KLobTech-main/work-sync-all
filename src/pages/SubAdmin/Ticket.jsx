@@ -19,6 +19,7 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Ticket = () => {
   const [tickets, setTickets] = useState([]);

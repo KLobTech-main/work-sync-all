@@ -12,6 +12,7 @@
     TableBody,
   } from "@mui/material";
   import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const LeaveSummary = () => {
     const [selectedFilter, setSelectedFilter] = useState("This month");

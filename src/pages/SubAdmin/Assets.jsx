@@ -9,6 +9,7 @@ import {
   Box,
   Paper,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Assets = () => {
   const [formData, setFormData] = useState({

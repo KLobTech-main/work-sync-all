@@ -18,6 +18,8 @@ import {
   CircularProgress
 } from "@mui/material";
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const Task = () => {
   const [tasks, setTasks] = useState([]); // State for tasks
   const [error, setError] = useState(null); // State for error

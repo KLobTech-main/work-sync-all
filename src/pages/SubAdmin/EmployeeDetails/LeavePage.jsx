@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const EmployeeDetails = () => {
   const { state } = useLocation(); // Fetching the employee data passed from the previous page

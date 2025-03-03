@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Documents() {
   const [documents, setDocuments] = useState([]);

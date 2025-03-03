@@ -14,6 +14,7 @@ import {
   Alert,
   TablePagination,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Meeting = () => {
   const [meetings, setMeetings] = useState([]); 

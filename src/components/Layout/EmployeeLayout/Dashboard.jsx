@@ -3,6 +3,7 @@ import { Button, Chip } from "@mui/material";
 import axios from "axios";
 import TimeLog from "../../../pages/Employee/Dasktop/TimeLog";
 import LeaveDesktop from "../../../pages/Employee/Dasktop/LeaveDesktop";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const formatTime = (date) => {
   let hours = date.getHours();

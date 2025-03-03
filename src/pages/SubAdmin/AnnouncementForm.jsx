@@ -7,6 +7,7 @@ import {
   FormControl,
   Typography,
 } from "@mui/material";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const AnnouncementForm = () => {
   const [title, setTitle] = useState("");

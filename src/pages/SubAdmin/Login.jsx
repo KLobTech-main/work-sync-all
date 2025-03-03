@@ -10,6 +10,8 @@ import {
   Alert,
 } from "@mui/material";
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const Login = () => {
   const [subAdminEmail, setEmail] = useState("");
   const [subAdminPassword, setPassword] = useState("");

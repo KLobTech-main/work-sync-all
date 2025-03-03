@@ -17,6 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import InnerSidbar from "../../../components/Layout/EmployeeLayout/InnerSidbar";
 import Profile from "../../../components/Layout/EmployeeLayout/Profile";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Emergency() {
   const [open, setOpen] = useState(false);

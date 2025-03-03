@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LeaveBalance = ({ darkMode }) => { // Destructure `darkMode` correctly
   const [leaves, setLeaves] = useState({});
