@@ -658,7 +658,7 @@ const EmployeeDetails = () => {
                             <strong>salary</strong>
                           </TableCell>
                           <TableCell>
-                            {/* {selectedEmployee.salaryOverview[selectedEmployee.salaryOverview.length-1] || 0} */}
+                            {selectedEmployee.salaryOverview[selectedEmployee.salaryOverview.length-1] || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -666,7 +666,7 @@ const EmployeeDetails = () => {
                             <strong>Conveyance Allowance </strong>
                           </TableCell>
                           <TableCell>
-                            {/* {selectedEmployee.salaryDetails.conveyanceAllowance || 0} */}
+                            {selectedEmployee.salaryDetails.conveyanceAllowance || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -674,7 +674,7 @@ const EmployeeDetails = () => {
                             <strong>House Rent Allowance </strong>
                           </TableCell>
                           <TableCell>
-                            {/* {selectedEmployee.salaryDetails.houseRentAllowance || 0} */}
+                            {selectedEmployee.salaryDetails.houseRentAllowance || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -682,7 +682,7 @@ const EmployeeDetails = () => {
                             <strong>Medical Allowance </strong>
                           </TableCell>
                           <TableCell>
-                            {/* {selectedEmployee.salaryDetails.medicalAllowance || 0} */}
+                            {selectedEmployee.salaryDetails.medicalAllowance || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -690,7 +690,7 @@ const EmployeeDetails = () => {
                             <strong>Pay Run Period </strong>
                           </TableCell>
                           <TableCell>
-                            {/* {selectedEmployee.salaryDetails.payRunPeriod || 0} */}
+                            {selectedEmployee.salaryDetails.payRunPeriod || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -698,7 +698,7 @@ const EmployeeDetails = () => {
                             <strong>Special Allowance</strong>
                           </TableCell>
                           <TableCell>
-                            {/* {selectedEmployee.salaryDetails.specialAllowance || 0} */}
+                            {selectedEmployee.salaryDetails.specialAllowance || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
