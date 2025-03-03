@@ -559,6 +559,22 @@ const EmployeeDetails = () => {
                         </TableRow>
                         <TableRow>
                           <TableCell>
+                            <strong>Department</strong>
+                          </TableCell>
+                          <TableCell>
+                            {selectedEmployee.department || "Not Available"}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <strong>designation</strong>
+                          </TableCell>
+                          <TableCell>
+                            {selectedEmployee.designation || "Not Available"}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
                             <strong>DOB</strong>
                           </TableCell>
                           <TableCell>
@@ -610,7 +626,7 @@ const EmployeeDetails = () => {
                             <strong>Sick Leave</strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.allLeaves?.sickLeave || 0}
+                            {selectedEmployee.allLeaves?.leaveTypeBalance.Sick || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -618,7 +634,7 @@ const EmployeeDetails = () => {
                             <strong>Casual Leave</strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.allLeaves?.casualLeave || 0}
+                            {selectedEmployee.allLeaves?.leaveTypeBalance.Casual || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -626,7 +642,7 @@ const EmployeeDetails = () => {
                             <strong>Paternity Leave</strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.allLeaves?.paternity || 0}
+                            {selectedEmployee.allLeaves?.leaveTypeBalance.Paternity || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -634,7 +650,7 @@ const EmployeeDetails = () => {
                             <strong>Optional Leave</strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.allLeaves?.optionalLeave || 0}
+                            {selectedEmployee.allLeaves?.leaveTypeBalance.Optional || 0}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -642,7 +658,7 @@ const EmployeeDetails = () => {
                             <strong>salary</strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.salaryOverview[selectedEmployee.salaryOverview.length-1] || 0}
+                            {/* {selectedEmployee.salaryOverview[selectedEmployee.salaryOverview.length-1] || 0} */}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -650,7 +666,7 @@ const EmployeeDetails = () => {
                             <strong>Conveyance Allowance </strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.salaryDetails.conveyanceAllowance || 0}
+                            {/* {selectedEmployee.salaryDetails.conveyanceAllowance || 0} */}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -658,7 +674,7 @@ const EmployeeDetails = () => {
                             <strong>House Rent Allowance </strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.salaryDetails.houseRentAllowance || 0}
+                            {/* {selectedEmployee.salaryDetails.houseRentAllowance || 0} */}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -666,7 +682,7 @@ const EmployeeDetails = () => {
                             <strong>Medical Allowance </strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.salaryDetails.medicalAllowance || 0}
+                            {/* {selectedEmployee.salaryDetails.medicalAllowance || 0} */}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -674,7 +690,7 @@ const EmployeeDetails = () => {
                             <strong>Pay Run Period </strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.salaryDetails.payRunPeriod || 0}
+                            {/* {selectedEmployee.salaryDetails.payRunPeriod || 0} */}
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -682,7 +698,7 @@ const EmployeeDetails = () => {
                             <strong>Special Allowance</strong>
                           </TableCell>
                           <TableCell>
-                            {selectedEmployee.salaryDetails.specialAllowance || 0}
+                            {/* {selectedEmployee.salaryDetails.specialAllowance || 0} */}
                           </TableCell>
                         </TableRow>
                         <TableRow>
