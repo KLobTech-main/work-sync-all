@@ -61,7 +61,7 @@ const EmployeeTable = () => {
   }, []);
 
   // ✅ Handle Toggle Approval
-  const handleToggle = async (userEmail, approvedByAdmin) => {
+  const handleToggle = async (userEmail, approvedBySubAdmin) => {
     const token = localStorage.getItem("token");
     const subAdminEmail = localStorage.getItem("email");
 
@@ -73,13 +73,13 @@ const EmployeeTable = () => {
     try {
       await axios.patch(
         "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/approve/access",
-        { subAdminEmail, userEmail, approvedByAdmin },
+        { subAdminEmail, userEmail, approvedBySubAdmin },
         { headers: { Authorization: token, "Content-Type": "application/json" } }
       );
 
       setEmployees((prevEmployees) =>
         prevEmployees.map((emp) =>
-          emp.email === userEmail ? { ...emp, approvedByAdmin } : emp
+          emp.email === userEmail ? { ...emp, approvedBySubAdmin } : emp
         )
       );
 

@@ -49,24 +49,21 @@ const JobHistoryForm = () => {
 
     // Prepare API body
     const requestBody = {
-      adminEmail,
-      jobHistory: {
-        email: formData.email.toString(),
-        name: formData.name.toString(),
-        department: formData.department.toString(),
-        workShift: {
-          shiftType: formData.shiftType.toString(),
-          profile: formData.profile.toString(),
-        },
-        designation: formData.designation.toString(),
-        employmentStatus: formData.employmentStatus.toString(),
-        joiningDate: formData.joiningDate.toString(),
+      email: formData.email.toString(),
+      name: formData.name.toString(),
+      department: formData.department.toString(),
+      workShift: {
+        shiftType: formData.shiftType.toString(),
+        profile: formData.profile.toString(),
       },
+      designation: formData.designation.toString(),
+      employmentStatus: formData.employmentStatus.toString(),
+      joiningDate: formData.joiningDate.toString(),
     };
 
     try {
       const response = await axios.post(
-        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/jobHistory/post",
+        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/jobHistory",
         requestBody,
         {
           headers: {
