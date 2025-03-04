@@ -1,0 +1,12 @@
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  
+    "routes": [
+      {
+        "src": "/robots.txt",
+        "dest": "/public/robots.txt"
+      }
+    ]
+  
+  
+}
