@@ -62,7 +62,7 @@ import SubAdminAnnouncementForm from "./pages/SubAdmin/AnnouncementForm.jsx";
 import SubAdminApproveRequest from "./pages/SubAdmin/ApproveRequest.jsx";
 import SubAdminAssests from "./pages/SubAdmin/Assets.jsx";
 import SubAdminEmployeeDetails from "./pages/SubAdmin/EmployeeDetail.jsx";
-import SubAdminFeedBack from "./pages/SubAdmin/FeedBack.jsx";
+import SubAdminFeedBack from "./pages/SubAdmin/Feedback.jsx";
 import SubAdminJobHistoryForm from "./pages/SubAdmin/JobHistoryForm.jsx";
 import SubAdminUserLeave from "./pages/SubAdmin/Leave.jsx";
 import SubAdminLeaveUserRequest from "./pages/SubAdmin/LeaveRequest.jsx";
