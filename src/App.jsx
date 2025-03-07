@@ -344,10 +344,6 @@ const SubAdminPrivateRoute = ({ element }) => {
               element={<SubAdminPrivateRoute element={<SubAdminJobHistory />} />}
             />
             <Route
-              path="/subadmin/jobHistoryForm"
-              element={<SubAdminPrivateRoute element={<SubAdminJobHistoryForm />} />}
-            />
-            <Route
               path="/subadmin/feedback"
               element={<SubAdminPrivateRoute element={<SubAdminFeedBack />} />}
             />

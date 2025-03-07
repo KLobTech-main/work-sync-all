@@ -98,7 +98,7 @@ const LeaveRequest = () => {
       await axios.patch(
         "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/approve/leave",
         {
-          subAdminEmail:adminEmail,
+          subAdminEmail: adminEmail,
           leaveId: id,
           status: newStatus,
         },
@@ -175,7 +175,6 @@ const LeaveRequest = () => {
                 <TableCell>Leave Type</TableCell>
                 <TableCell>Start Date</TableCell>
                 <TableCell>End Date</TableCell>
-                <TableCell>Status</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
@@ -193,15 +192,15 @@ const LeaveRequest = () => {
                       <FormControl fullWidth>
                         <Select
                           value={leave.status}
-                          onChange={(e) =>
-                            handleStatusChange(leave.id, e.target.value)
-                          }
+                          onChange={(e) => handleStatusChange(leave.id, e.target.value)}
+                          disabled={leave.status === "APPROVED" || leave.status === "REJECTED"}
                         >
                           <MenuItem value="PENDING">Pending</MenuItem>
                           <MenuItem value="APPROVED">Approved</MenuItem>
                           <MenuItem value="REJECTED">Rejected</MenuItem>
                         </Select>
                       </FormControl>
+
                     </TableCell>
                   </TableRow>
                 ))
