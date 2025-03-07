@@ -208,22 +208,6 @@ const Sidebar = () => {
           </ListItem>
         </NavLink>
 
-        {/* Last 3 Buttons */}
-        <NavLink
-          to="/subadmin/jobHistoryForm"
-          className="nav-link"
-          onClick={handleNavLinkClick}
-        >
-          <ListItem button>
-            <ListItemIcon>
-              <JobFormIcon sx={{ color: "#1E3A8A" }} />
-            </ListItemIcon>
-            <ListItemText
-              primary="Job History Form"
-              sx={{ color: "#E0F2F1" }}
-            />
-          </ListItem>
-        </NavLink>
         <NavLink
           to="/subadmin/jobHistory"
           className="nav-link"

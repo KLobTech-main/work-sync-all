@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import JobHistoryForm from "./JobHistoryForm";
 import {
   Paper,
   Table,
@@ -108,6 +109,7 @@ const JobHistory = () => {
             alignItems: "center",
           }}
         >
+          <JobHistoryForm />
           <TextField
             label="Search by Name"
             variant="outlined"
