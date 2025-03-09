@@ -43,7 +43,7 @@ const FeedbackTable = () => {
             params: { subAdminEmail:adminEmail },
           }
         );
-        setFeedbackData(response.data || []);
+        setFeedbackData(response.data.data || []);
       } catch (error) {
         console.error("Error fetching feedback data:", error);
       } finally {

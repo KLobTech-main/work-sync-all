@@ -72,6 +72,8 @@ import SubAdminLeaveUserRequest from "./pages/SubAdmin/LeaveRequest.jsx";
 // import SubAdminCreateAnnouncementForm from "./pages/SubAdmin/AnnouncementPages/CreateAnnouncement.jsx";
 import SubAdminAnnouncement from "./pages/SubAdmin/AnnouncementPages/SubAdminAnnouncement.jsx";
 import SubAdminUserAnnouncement from "./pages/SubAdmin/AnnouncementPages/UserAnnouncement.jsx";
+import Project from "./pages/SubAdmin/Project.jsx";
+import SearchDocument from "./pages/SubAdmin/SearchDocument.jsx";
 
 // const allowedArea = {
 //   latitude: 26.8718,
@@ -364,8 +366,16 @@ const SubAdminPrivateRoute = ({ element }) => {
               element={<SubAdminPrivateRoute element={<SubAdminAnnouncement />} />}
             />
             <Route
-              path="/subadmin/create-announcement"
-              element={<SubAdminPrivateRoute element={<SubAdminAnnouncementForm />} />}
+              path="/subadmin/project"
+              element={<SubAdminPrivateRoute element={<Project />} />}
+            />
+            <Route
+              path="/subadmin/project"
+              element={<SubAdminPrivateRoute element={<Project />} />}
+            />
+            <Route
+              path="/subadmin/document"
+              element={<SubAdminPrivateRoute element={<SearchDocument />} />}
             />
             {/* Private Routes for employee*/}
             <Route

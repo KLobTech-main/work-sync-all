@@ -1,128 +1,127 @@
-import React, { useState } from "react";
-import axios from "axios";
-import {
-  TextField,
-  Button,
-  Grid,
-  Container,
-  Typography,
-  Box,
-  Paper,
-} from "@mui/material";
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+import React, { useEffect, useState } from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import AssetsTables from "./AssetsTable";
+function AssetsTable() {
+  const [assets, setAssets] = useState([]);
+  const [search, setSearch] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const token = localStorage.getItem("token");
+  const adminEmail = encodeURIComponent("ishan@subadmin.com");
 
-const Assets = () => {
-  const [formData, setFormData] = useState({
-    id: "",
-    email: "",
-    name: "",
-    assetName: "",
-    assetsCode: "",
-    serialNo: "",
-    isWorking: "",
-    type: "",
-    issuedDate: "",
-    note: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const adminEmail = localStorage.getItem("email");
-    const authToken = localStorage.getItem("token");
-
-    if (!adminEmail || !authToken) {
-      alert("Missing admin email or authentication token.");
-      return;
-    }
-
-    const data = {
-      adminEmail,
-      asset: {
-        ...formData,
-      },
-    };
-
-    try {
-      const response = await axios.post(
-        "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/assets/create",
-        data,
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          },
+  useEffect(() => {
+    const fetchAssets = async () => {
+      try {
+        const response = await fetch(
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/api/assets/all-assets?adminEmail=${adminEmail}`,
+          {
+            method: "GET",
+            headers: {
+              "Authorization": token,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        
+        const result = await response.json();
+        if (response.ok) {
+          setAssets(result.data);
+        } else {
+          console.error("Error fetching assets:", result.message);
         }
-      );
-      alert("Asset created successfully!");
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error creating asset:", error);
-      alert("Failed to create asset.");
-    }
+      } catch (error) {
+        console.error("Error fetching assets:", error);
+      }
+    };
+    
+    fetchAssets();
+  }, [adminEmail]);
+
+  const handleRowClick = (asset) => {
+    setSelectedAsset(asset);
+    setOpenDialog(true);
   };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedAsset(null);
+  };
+
+  const filteredAssets = assets.filter(asset =>
+    asset.assetName.toLowerCase().includes(search.toLowerCase()) ||
+    asset.email.toLowerCase().includes(search.toLowerCase()) ||
+    asset.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <Container maxWidth="sm">
-      <Box mt={5}>
-        <Paper
-          elevation={3}
-          style={{ padding: "20px", backgroundColor: "#fff" }}
-        >
-          <Typography variant="h4" align="center" gutterBottom>
-            Create Asset
-          </Typography>
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
-              {[
-                // { label: "ID", name: "id" },
-                { label: "Email", name: "email" },
-                { label: "Name", name: "name" },
-                { label: "Asset Name", name: "assetName" },
-                { label: "Assets Code", name: "assetsCode" },
-                { label: "Serial Number", name: "serialNo" },
-                { label: "Is Working", name: "isWorking" },
-                { label: "Type", name: "type" },
-                {
-                  label: "Issued Date",
-                  name: "issuedDate",
-                  type: "date",
-                  InputLabelProps: {
-                    shrink: true,
-                  },
-                },
-                { label: "Note", name: "note" },
-              ].map((field, index) => (
-                <Grid item xs={12} key={index}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    label={field.label}
-                    name={field.name}
-                    value={formData[field.name]}
-                    onChange={handleChange}
-                    type={field.type || "text"}
-                    InputLabelProps={field.InputLabelProps || {}}
-                    required
-                  />
-                </Grid>
-              ))}
-            </Grid>
-            <Box mt={3} textAlign="center">
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
-            </Box>
-          </form>
-        </Paper>
-      </Box>
-    </Container>
-  );
-};
+    <Paper sx={{ padding: 2, marginTop: 4 }}>
+      <div className="flex  mb-8 flex-row justify-between items-center">
 
-export default Assets;
+      <Typography variant="h6" textAlign="center" marginBottom={2}>
+        Assets List
+      </Typography>
+      <div className="flex gap-5 flex-row items-center">
+
+      <AssetsTables/>  
+      <TextField
+        label="Search Assets"
+        variant="outlined"
+        fullWidth
+        onChange={(e) => setSearch(e.target.value)}
+        sx={{ width: "300px"}}
+        />
+        </div>
+        </div>
+      <TableContainer component={Paper}>  
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Sr No</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Asset Name</TableCell>
+              <TableCell>Issue date</TableCell>
+              <TableCell>Note</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredAssets.map((asset, index) => (
+              <TableRow key={asset.id} onClick={() => handleRowClick(asset)} style={{ cursor: "pointer" }}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{asset.email}</TableCell>
+                <TableCell>{asset.name}</TableCell>
+                <TableCell>{asset.assetName}</TableCell>
+                <TableCell>{asset.issuedDate}</TableCell>
+                <TableCell>
+                  {asset.note.split(" ").length > 4 ? asset.note.split(" ").slice(0, 4).join(" ") + "..." : asset.note}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      
+      {selectedAsset && (
+        <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
+          <DialogTitle>Asset Details</DialogTitle>
+          <DialogContent>
+            <Typography><b>Email:</b> {selectedAsset.email}</Typography>
+            <Typography><b>Name:</b> {selectedAsset.name}</Typography>
+            <Typography><b>Asset Name:</b> {selectedAsset.assetName}</Typography>
+            <Typography><b>Asset Code:</b> {selectedAsset.assetsCode}</Typography>
+            <Typography><b>Serial No:</b> {selectedAsset.serialNo}</Typography>
+            <Typography><b>Working Status:</b> {selectedAsset.isWorking}</Typography>
+            <Typography><b>Type:</b> {selectedAsset.type}</Typography>
+            <Typography><b>Issued Date:</b> {selectedAsset.issuedDate}</Typography>
+            <Typography><b>Full Note:</b> {selectedAsset.note}</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary" variant="contained">Close</Button>
+          </DialogActions>
+        </Dialog>
+      )}
+    </Paper>
+  );
+}
+
+export default AssetsTable;
