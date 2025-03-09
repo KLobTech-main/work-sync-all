@@ -10,7 +10,7 @@ Snackbar,
   }
 
 
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);

@@ -8,20 +8,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
-  Box,
   Snackbar,
   Alert,
   TablePagination,
   Typography,
-  CircularProgress,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button
+  Button,
+  TextField
 } from "@mui/material";
 import CreateTask from "./CreateTask";
+
 const Task = () => {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
@@ -56,6 +55,10 @@ const Task = () => {
     fetchTasks();
   }, []);
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   const filteredTasks = tasks?.filter(
     (task) =>
       task?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -69,33 +72,42 @@ const Task = () => {
   const handleCloseDialog = () => {
     setSelectedTask(null);
   };
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+  if (loading) {
+    return (
+      <>
+        <Snackbar
+          open={snackbarOpen}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+            Loading
+          </Alert>
+        </Snackbar>
+      </>
+    );
+  }
 
   return (
     <div className="p-5">
-      <Snackbar open={snackbarOpen} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
-        <Alert severity="info">Loading...</Alert>
-      </Snackbar>
+      <div className="flex flex-row justify-between items-center"> 
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
-        <h2 className="text-xl font-bold">Employee Tasks</h2>
-        <Box sx={{ width: "500px", display: "flex", gap:2,alignItems: "center" }}> 
-          <CreateTask/>
+      <h2 className="text-xl font-bold">Employee Tasks</h2>
+      <div className="flex gap-2  items-center">
+      <CreateTask />
 
-          <TextField
-            label="Search by Name or Task"
-            variant="outlined"
-            fullWidth
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+        <TextField
+          label="Search by email "
+          variant="outlined"
+          size="small"
+          value={searchTerm}
+          onChange={handleSearchChange}
           />
-        </Box>
-      </Box>
-
-      {loading && (
-        <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
-          <CircularProgress />
-        </Box>
-      )}
+          </div>
+      </div>
 
       {error && (
         <Typography variant="body1" color="error" align="center">
@@ -127,9 +139,9 @@ const Task = () => {
                 {filteredTasks.length > 0 ? (
                   filteredTasks
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((task) => (
+                    .map((task, index) => (
                       <TableRow key={task.id} hover onClick={() => handleRowClick(task)}>
-                        <TableCell>{task.id}</TableCell>
+                        <TableCell>{++index}</TableCell>
                         <TableCell>{task.assignedBy}</TableCell>
                         <TableCell>{task.assignedTo}</TableCell>
                         <TableCell>{task.title}</TableCell>

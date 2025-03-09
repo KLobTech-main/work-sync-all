@@ -13,128 +13,102 @@ import {
   Snackbar,
   Alert,
   TablePagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from "@mui/material";
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Meeting = () => {
-  const [meetings, setMeetings] = useState([]); 
-  const [searchTerm, setSearchTerm] = useState(""); 
-  const [searchDate, setSearchDate] = useState(""); 
-  const [page, setPage] = useState(0); 
-  const [rowsPerPage, setRowsPerPage] = useState(10); 
-  const [loading, setLoading] = useState(false);
+  const [meetings, setMeetings] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchDate, setSearchDate] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [selectedMeeting, setSelectedMeeting] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchMeetings = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorMessage("Authorization token is missing");
-        setSnackbarOpen(true);
-        return;
-      }
-
       try {
-        setLoading(true);
-        setSnackbarOpen(true);
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setErrorMessage("Authorization token is missing");
+       return;
+        }
 
+  setLoading(true);
+  setSnackbarOpen(true); 
         const response = await axios.get(
           `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/all-meetings`,
           {
-            headers: {
-              Authorization: token,
-            },
+            headers: { Authorization: token },
           }
         );
-
-        console.log("API Response:", response); 
-
-        if (response.status === 204 || !response.data || !response.data.data) {
-          setMeetings([]); 
-        } else {
-          setMeetings(response.data.data); 
-        }
+        setMeetings(response.data.data || []);
       } catch (error) {
-        console.error("Error fetching meetings:", error);
         setErrorMessage("Failed to load meetings. Please try again.");
-        setSnackbarOpen(true);
-      } finally {
-        setLoading(false);
-      }
-    };
+         }
 
+  finally {
+    setLoading(false);
+    setSnackbarOpen(false);
+  }
+
+    };
     fetchMeetings();
   }, []);
 
-  useEffect(() => {
-    console.log("Meetings Data:", meetings);
-  }, [meetings]);
+  const filteredMeetings = meetings.filter((meeting) =>
+    meeting.meetingTitle?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const filteredMeetings = meetings.filter((meeting) => {
-    const matchesTopic = meeting.meetingTitle
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesDate = searchDate ? meeting.date === searchDate : true;
-    return matchesTopic && matchesDate;
-  });
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const handleRowClick = (meeting) => {
+    setSelectedMeeting(meeting);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); 
+  const handleCloseDialog = () => {
+    setSelectedMeeting(null);
   };
-
+  const [loading, setLoading] = useState(false);
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-
-  if (loading) {
-    return (
-      <Snackbar
-        open={snackbarOpen}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: "100%" }}>
-          Loading...
-        </Alert>
-      </Snackbar>
-    );
+  if(loading){
+    return(
+      <>
+    <Snackbar
+      open={snackbarOpen}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
+      <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+        Loading
+      </Alert>
+    </Snackbar>
+      </>
+    )
   }
 
   return (
     <div className="p-6">
       <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
         <h2 className="text-xl font-bold mb-4">Employee Meetings</h2>
-        <Box display="flex" gap={2} sx={{ width: "800px", justifyContent: "flex-end" }}>
-          <TextField
-            label="Search by Topic"
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            sx={{ width: "400px" }}
-          />
-          <TextField
-            label="Search by Date"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            variant="outlined"
-            value={searchDate}
-            onChange={(e) => setSearchDate(e.target.value)}
-            sx={{ width: "400px" }}
-          />
-        </Box>
+        <TextField
+          label="Search by Topic"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ width: "400px" }}
+        />
       </Box>
 
       {errorMessage && (
-        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-          <Alert onClose={handleSnackbarClose} severity="error">
-            {errorMessage}
-          </Alert>
+        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
+          <Alert severity="error">{errorMessage}</Alert>
         </Snackbar>
       )}
 
@@ -143,69 +117,54 @@ const Meeting = () => {
           <Table>
             <TableHead>
               <TableRow style={{ backgroundColor: "#f0f0f0" }}>
-                <TableCell style={{ fontWeight: "bold" }}>ID</TableCell>
-                <TableCell style={{ width: "130px", fontWeight: "bold" }}>
-                  Meeting Title
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Mode</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Participants</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Duration</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Date</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Time</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Link</TableCell>
+                <TableCell>ID</TableCell>
+                <TableCell>Meeting Title</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Participants</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredMeetings?.length > 0 ? (
-                filteredMeetings
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((meeting) => (
-                    <TableRow key={meeting.id}>
-                      <TableCell>{meeting.id || "N/A"}</TableCell>
-                      <TableCell>{meeting.meetingTitle || "N/A"}</TableCell>
-                      <TableCell>{meeting.description || "N/A"}</TableCell>
-                      <TableCell>{meeting.meetingMode || "N/A"}</TableCell>
-                      <TableCell>{meeting.participants?.join(", ") || "N/A"}</TableCell>
-                      <TableCell>{meeting.duration || "N/A"}</TableCell>
-                      <TableCell>{meeting.date || "N/A"}</TableCell>
-                      <TableCell>
-                        {meeting.scheduledTime
-                          ? new Date(meeting.scheduledTime).toLocaleTimeString()
-                          : "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        {meeting.meetingLink ? (
-                          <a href={meeting.meetingLink} target="_blank" rel="noopener noreferrer">
-                            Join
-                          </a>
-                        ) : (
-                          "No Link"
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={9} align="center">
-                    No meetings found.
+              {filteredMeetings.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((meeting,index) => (
+                <TableRow key={meeting.id} onClick={() => handleRowClick(meeting)} style={{ cursor: "pointer" }}>
+                  <TableCell>{++index}</TableCell>
+                  <TableCell>{meeting.meetingTitle || "N/A"}</TableCell>
+                  <TableCell>
+                    {meeting.description?.split(" ").slice(0, 5).join(" ") + (meeting.description?.split(" ").length > 5 ? "..." : "")}
                   </TableCell>
+                  <TableCell>{meeting.participants?.slice(0, 2).join(", ") + (meeting.participants?.length > 2 ? "..." : "") || "N/A"}</TableCell>
                 </TableRow>
-              )}
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
 
       <TablePagination
-        rowsPerPageOptions={[10]}
         component="div"
         count={filteredMeetings.length}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        onPageChange={(event, newPage) => setPage(newPage)}
       />
+
+      <Dialog open={Boolean(selectedMeeting)} onClose={handleCloseDialog}>
+        <DialogTitle>Meeting Details</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <strong>ID:</strong> {selectedMeeting?.id} <br />
+            <strong>Title:</strong> {selectedMeeting?.meetingTitle} <br />
+            <strong>Description:</strong> {selectedMeeting?.description} <br />
+            <strong>Participants:</strong> {selectedMeeting?.participants?.join(", ") || "N/A"} <br />
+            <strong>Mode:</strong> {selectedMeeting?.meetingMode || "N/A"} <br />
+            <strong>Duration:</strong> {selectedMeeting?.duration || "N/A"} <br />
+            <strong>Date:</strong> {selectedMeeting?.date || "N/A"} <br />
+            <strong>Time:</strong> {selectedMeeting?.scheduledTime ? new Date(selectedMeeting.scheduledTime).toLocaleTimeString() : "N/A"}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
