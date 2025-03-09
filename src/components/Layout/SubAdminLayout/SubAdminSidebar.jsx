@@ -93,6 +93,19 @@ const Sidebar = () => {
             <ListItemText primary="Leave Request" sx={{ color: "#E0F2F1" }} />
           </ListItem>
         </NavLink>
+        {/* Leave Request Cancel */}
+        <NavLink
+          to="/subadmin/leave-cancel"
+          className="nav-link"
+          onClick={handleNavLinkClick}
+        >
+          <ListItem button>
+            <ListItemIcon>
+              <MeetingIcon sx={{ color: "#1E3A8A" }} />
+            </ListItemIcon>
+            <ListItemText primary="Leave Request cancel" sx={{ color: "#E0F2F1" }} />
+          </ListItem>
+        </NavLink>
 
         {/* Approve Request */}
         <NavLink
@@ -193,6 +206,18 @@ const Sidebar = () => {
               <TaskIcon sx={{ color: "#1E3A8A" }} />
             </ListItemIcon>
             <ListItemText primary="Task" sx={{ color: "#E0F2F1" }} />
+          </ListItem>
+        </NavLink>
+        <NavLink
+          to="/subadmin/tasks-extend"
+          className="nav-link"
+          onClick={handleNavLinkClick}
+        >
+          <ListItem button>
+            <ListItemIcon>
+              <TaskIcon sx={{ color: "#1E3A8A" }} />
+            </ListItemIcon>
+            <ListItemText primary="Task Extend" sx={{ color: "#E0F2F1" }} />
           </ListItem>
         </NavLink>
         <NavLink

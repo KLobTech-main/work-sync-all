@@ -6,6 +6,8 @@ import {
   TextField,
   FormControl,
   Typography,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -13,7 +15,6 @@ const AnnouncementForm = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [announcements, setAnnouncements] = useState([]);
-  const [loading, setLoading] = useState(false);
   const recipient="employee"
 
   const handleTitleChange = (e) => setTitle(e.target.value);
@@ -40,6 +41,7 @@ const AnnouncementForm = () => {
 
     try {
       setLoading(true);
+  setSnackbarOpen(true); 
       const response = await axios.post(
         "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/createNotification",
         requestData,
@@ -63,10 +65,35 @@ const AnnouncementForm = () => {
     } catch (error) {
       console.error("Error creating announcement:", error);
       alert("An error occurred while creating the announcement");
-    } finally {
+    }  finally {
       setLoading(false);
+      setSnackbarOpen(false);
     }
+  
   };
+
+
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+  if(loading){
+    return(
+      <>
+    <Snackbar
+      open={snackbarOpen}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
+      <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+        Loading
+      </Alert>
+    </Snackbar>
+      </>
+    )
+  }
+
 
   return (
     <Box>

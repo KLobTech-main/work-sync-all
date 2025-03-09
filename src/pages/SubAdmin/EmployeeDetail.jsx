@@ -12,6 +12,8 @@ import {
   Button,
   Typography,
   Menu,
+  Snackbar,
+  Alert,
   MenuItem,
   IconButton,
   Dialog,
@@ -36,8 +38,6 @@ const EmployeeDetails = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editEmployee, setEditEmployee] = useState(null);
   const [showAllInfoDialogOpen, setShowAllInfoDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [isSalaryDialogOpen, setSalaryDialogOpen] = useState(false);
   const [newSalary, setNewSalary] = useState("");
 
@@ -55,8 +55,8 @@ const EmployeeDetails = () => {
 
       try {
         setLoading(true);
-        setSnackbarOpen(true);
-        const response = await fetch(
+        setSnackbarOpen(true); 
+          const response = await fetch(
           "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/allUsers",
           {
             headers: {
@@ -79,7 +79,7 @@ const EmployeeDetails = () => {
       } catch (error) {
         console.error("Error fetching employees:", error);
         ([]); // Reset employees state
-      } finally {
+      }  finally {
         setLoading(false);
         setSnackbarOpen(false);
       }
@@ -316,16 +316,35 @@ const EmployeeDetails = () => {
         setMedicalAllowance(""); // Clear input fields
       });
   };
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+  if(loading){
+    return(
+      <>
+    <Snackbar
+      open={snackbarOpen}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
+      <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+        Loading
+      </Alert>
+    </Snackbar>
+      </>
+    )
+  }
   return (
-    <div>
-      {/* Add your component rendering logic here */}
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
+   
         <>
           <div className="p-6 overflow-auto h-screen">
-            <h2 className="text-xl font-bold">Employee Details</h2>
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+
+            <Box sx={{ display: "flex",alignItems:"center", justifyContent: "space-between", mb: 2 }}>
+             <Typography variant="h4" gutterBottom>
+             Employee Details
+                    </Typography>
               <TextField
                 label="Search by Name"
                 variant="outlined"
@@ -844,8 +863,7 @@ const EmployeeDetails = () => {
             )}
           </div>
         </>
-      )}
-    </div>
+     
   );
 };
 

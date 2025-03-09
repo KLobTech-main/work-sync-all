@@ -108,6 +108,7 @@ const LeaveRequest = () => {
             Authorization: token,
           },
         }
+
       );
 
       setLeaveData((prevData) =>
@@ -118,6 +119,7 @@ const LeaveRequest = () => {
     } catch (err) {
       setError(err.message);
     }
+    
   };
 
   if (loading) return <CircularProgress />;
