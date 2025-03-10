@@ -98,7 +98,7 @@ const SubAdminDetails = () => {
       };
   
       const response = await axios.patch(
-        'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/approve/access',
+        'https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/sub-admin-access',
         requestBody,
         {
           headers: {
