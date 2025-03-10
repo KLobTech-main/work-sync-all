@@ -72,6 +72,10 @@ import SubAdminLeaveUserRequest from "./pages/SubAdmin/LeaveRequest.jsx";
 // import SubAdminCreateAnnouncementForm from "./pages/SubAdmin/AnnouncementPages/CreateAnnouncement.jsx";
 import SubAdminAnnouncement from "./pages/SubAdmin/AnnouncementPages/SubAdminAnnouncement.jsx";
 import SubAdminUserAnnouncement from "./pages/SubAdmin/AnnouncementPages/UserAnnouncement.jsx";
+import Project from "./pages/SubAdmin/Project.jsx";
+import SearchDocument from "./pages/SubAdmin/SearchDocument.jsx";
+import LeaveCancel from "./pages/SubAdmin/LeaveCancel.jsx";
+import TaskExtend from "./pages/SubAdmin/TaskExtend.jsx";
 
 // const allowedArea = {
 //   latitude: 26.8718,
@@ -324,6 +328,10 @@ const SubAdminPrivateRoute = ({ element }) => {
               element={<SubAdminPrivateRoute element={<SubAdminTask />} />}
             />
             <Route
+              path="/subadmin/tasks-extend"
+              element={<SubAdminPrivateRoute element={<TaskExtend />} />}
+            />
+            <Route
               path="/subadmin/tickets"
               element={<SubAdminPrivateRoute element={<SubAdminTicket />} />}
             />
@@ -363,9 +371,18 @@ const SubAdminPrivateRoute = ({ element }) => {
               path="/subadmin/subadmin-announcement"
               element={<SubAdminPrivateRoute element={<SubAdminAnnouncement />} />}
             />
+            
             <Route
-              path="/subadmin/create-announcement"
-              element={<SubAdminPrivateRoute element={<SubAdminAnnouncementForm />} />}
+              path="/subadmin/project"
+              element={<SubAdminPrivateRoute element={<Project />} />}
+            />
+            <Route
+              path="/subadmin/leave-cancel"
+              element={<SubAdminPrivateRoute element={<LeaveCancel />} />}
+            />
+            <Route
+              path="/subadmin/document"
+              element={<SubAdminPrivateRoute element={<SearchDocument />} />}
             />
             {/* Private Routes for employee*/}
             <Route

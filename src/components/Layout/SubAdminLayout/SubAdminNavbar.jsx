@@ -1,15 +1,9 @@
-import { AppBar, Toolbar, Typography } from '@mui/material';
+import React from 'react'
 
-const Navbar = () => {
-  return (  
-    <AppBar  position="sticky">
-      <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Work Sync Sub Admin Panel
-        </Typography>
-      </Toolbar>
-    </AppBar>
-  );
-};
+function SubAdminNavbar() {
+  return (
+    <div></div>
+  )
+}
 
-export default Navbar;
+export default SubAdminNavbar

@@ -16,6 +16,8 @@ import {
   FormControl,
   InputLabel,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -41,6 +43,10 @@ const LeaveRequest = () => {
         if (!token || !adminEmail) {
           throw new Error("Token or admin email is missing");
         }
+        
+  setLoading(true);
+  setSnackbarOpen(true); 
+ 
 
         const response = await axios.get(
           "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/all-leaves",
@@ -57,8 +63,9 @@ const LeaveRequest = () => {
         setLeaveData(response.data.data);
       } catch (err) {
         setError(err.message);
-      } finally {
+      }  finally {
         setLoading(false);
+        setSnackbarOpen(false);
       }
     };
 
@@ -108,6 +115,7 @@ const LeaveRequest = () => {
             Authorization: token,
           },
         }
+
       );
 
       setLeaveData((prevData) =>
@@ -118,9 +126,28 @@ const LeaveRequest = () => {
     } catch (err) {
       setError(err.message);
     }
+    
   };
 
-  if (loading) return <CircularProgress />;
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+  if(loading){
+    return(
+      <>
+    <Snackbar
+      open={snackbarOpen}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
+      <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+        Loading
+      </Alert>
+    </Snackbar>
+      </>
+    )
+  }
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (

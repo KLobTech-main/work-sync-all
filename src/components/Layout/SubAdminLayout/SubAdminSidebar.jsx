@@ -16,6 +16,7 @@ import {
   ConfirmationNumber as TicketIcon,
   Announcement as AnnouncementIcon,
   ExpandLess,
+EventBusy as EventBusyIcon,
   ExpandMore,
   Create as CreateIcon,
   AccountCircle as UserIcon,
@@ -29,6 +30,11 @@ import {
 
 const Sidebar = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [openTask, setOpenTask] = useState(false);
+
+  const [openLeave, setOpenLeave] = useState(false);
+
+
   const navigate = useNavigate();
 
   const handleDropdownToggle = (menu) => {
@@ -80,19 +86,29 @@ const Sidebar = () => {
           </ListItem>
         </NavLink>
 
-        {/* Leave Request */}
-        <NavLink
-          to="/subadmin/leave-request"
-          className="nav-link"
-          onClick={handleNavLinkClick}
-        >
-          <ListItem button>
-            <ListItemIcon>
-              <MeetingIcon sx={{ color: "#1E3A8A" }} />
-            </ListItemIcon>
-            <ListItemText primary="Leave Request" sx={{ color: "#E0F2F1" }} />
-          </ListItem>
-        </NavLink>
+{/* Leave Request Dropdown */}
+<ListItem button onClick={() => setOpenLeave(!openLeave)}>
+        <ListItemIcon>
+          <EventBusyIcon sx={{ color: "#1E3A8A" }} />
+        </ListItemIcon>
+        <ListItemText primary="Leave Requests" sx={{ color: "#E0F2F1" }} />
+        {openLeave ? <ExpandLess sx={{ color: "#E0F2F1" }} /> : <ExpandMore sx={{ color: "#E0F2F1" }} />}
+      </ListItem>
+
+      <Collapse in={openLeave} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <NavLink to="/subadmin/leave-request" className="nav-link">
+            <ListItem button sx={{ pl: 4 }}>
+              <ListItemText primary="Leave Request" sx={{ color: "#E0F2F1" }} />
+            </ListItem>
+          </NavLink>
+          <NavLink to="/subadmin/leave-cancel" className="nav-link">
+            <ListItem button sx={{ pl: 4 }}>
+              <ListItemText primary="Leave Request Cancel" sx={{ color: "#E0F2F1" }} />
+            </ListItem>
+          </NavLink>
+        </List>
+      </Collapse>
 
         {/* Approve Request */}
         <NavLink
@@ -183,18 +199,46 @@ const Sidebar = () => {
             <ListItemText primary="Meeting" sx={{ color: "#E0F2F1" }} />
           </ListItem>
         </NavLink>
+
         <NavLink
-          to="/subadmin/tasks"
+          to="/subadmin/project"
           className="nav-link"
           onClick={handleNavLinkClick}
         >
           <ListItem button>
             <ListItemIcon>
-              <TaskIcon sx={{ color: "#1E3A8A" }} />
+              <AssetsIcon sx={{ color: "#1E3A8A" }} />
             </ListItemIcon>
-            <ListItemText primary="Task" sx={{ color: "#E0F2F1" }} />
+            <ListItemText primary="Project" sx={{ color: "#E0F2F1" }} />
           </ListItem>
         </NavLink>
+
+        <ListItem button onClick={() => setOpenTask(!openTask)}>
+        <ListItemIcon>
+          <TaskIcon sx={{ color: "#1E3A8A" }} />
+        </ListItemIcon>
+        <ListItemText primary="Task" sx={{ color: "#E0F2F1" }} />
+        {openTask ? <ExpandLess sx={{ color: "#E0F2F1" }} /> : <ExpandMore sx={{ color: "#E0F2F1" }} />}
+      </ListItem>
+
+      <Collapse in={openTask} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <NavLink to="/subadmin/tasks" className="nav-link">
+            <ListItem button sx={{ pl: 4 }}>
+              <ListItemText primary="Task" sx={{ color: "#E0F2F1" }} />
+            </ListItem>
+          </NavLink>
+          <NavLink to="/subadmin/tasks-extend" className="nav-link">
+            <ListItem button sx={{ pl: 4 }}>
+              <ListItemText primary="Task Extend" sx={{ color: "#E0F2F1" }} />
+            </ListItem>
+          </NavLink>
+        </List>
+      </Collapse>
+
+        
+
+
         <NavLink
           to="/subadmin/tickets"
           className="nav-link"
@@ -242,6 +286,19 @@ const Sidebar = () => {
               <AssetsIcon sx={{ color: "#1E3A8A" }} />
             </ListItemIcon>
             <ListItemText primary="Assets" sx={{ color: "#E0F2F1" }} />
+          </ListItem>
+        </NavLink>
+      
+        <NavLink
+          to="/subadmin/document"
+          className="nav-link"
+          onClick={handleNavLinkClick}
+        >
+          <ListItem button>
+            <ListItemIcon>
+              <AssetsIcon sx={{ color: "#1E3A8A" }} />
+            </ListItemIcon>
+            <ListItemText primary="Document" sx={{ color: "#E0F2F1" }} />
           </ListItem>
         </NavLink>
       </List>

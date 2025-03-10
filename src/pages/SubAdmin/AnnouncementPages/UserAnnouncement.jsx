@@ -9,14 +9,16 @@ import {
   Paper,
   Typography,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const UserAnnouncementTable = () => {
   const [announcements, setAnnouncements] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -32,35 +34,50 @@ const UserAnnouncementTable = () => {
       }
 
       try {
+         setLoading(true);
+        setSnackbarOpen(true); 
+       
         const response = await axios.get(apiUrl, {
-          params: {
-            recipientType: "user",
-            userEmail,
-          },
-          headers: {
-            Authorization: authToken,
-          },
+          params: { recipientType: "user", userEmail },
+          headers: { Authorization: authToken },
         });
+
         setAnnouncements(response.data);
+        setSnackbar({ open: true, message: "Announcements Loaded!", severity: "success" });
       } catch {
         setError("Failed to fetch announcements. Please try again later.");
-      } finally {
+        setSnackbar({ open: true, message: "Error fetching data.", severity: "error" });
+      } 
+      finally {
         setLoading(false);
+        setSnackbarOpen(false);
       }
+    
     };
 
     fetchAnnouncements();
   }, []);
 
-  if (loading) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <CircularProgress />
-        <Typography variant="h6" sx={{ marginTop: 2 }}>
-          Loading Announcements...
-        </Typography>
-      </div>
-    );
+
+ 
+   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+  if(loading){
+    return(
+      <>
+    <Snackbar
+      open={snackbarOpen}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
+      <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+        Loading
+      </Alert>
+    </Snackbar>
+      </>
+    )
   }
 
   if (error) {
@@ -72,28 +89,15 @@ const UserAnnouncementTable = () => {
   }
 
   return (
-    <TableContainer component={Paper}>
-      <Typography
-        variant="h5"
-        sx={{ padding: 2, backgroundColor: "#0D1B2A", color: "#E0F2F1" }}
-      >
-        User Announcements
-      </Typography>
-      <Table>
+    <TableContainer sx={{ padding: "20px" }}>
+      <Typography variant="h4">User Announcements</Typography>
+      <Table component={Paper}>
         <TableHead>
           <TableRow>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Title
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Description
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Date
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Read Status
-            </TableCell>
+            <TableCell align="left" sx={{ fontWeight: "bold" }}>Title</TableCell>
+            <TableCell align="left" sx={{ fontWeight: "bold" }}>Description</TableCell>
+            <TableCell align="left" sx={{ fontWeight: "bold" }}>Date</TableCell>
+            <TableCell align="left" sx={{ fontWeight: "bold" }}>Read Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -101,16 +105,24 @@ const UserAnnouncementTable = () => {
             <TableRow key={announcement.id}>
               <TableCell>{announcement.title}</TableCell>
               <TableCell>{announcement.message}</TableCell>
-              <TableCell>
-                {new Date(announcement.createdAt).toLocaleDateString()}
-              </TableCell>
-              <TableCell>
-                {announcement.read ? "Seen" : "Not Seen Yet"}
-              </TableCell>
+              <TableCell>{new Date(announcement.createdAt).toLocaleDateString()}</TableCell>
+              <TableCell>{announcement.read ? "Seen" : "Not Seen Yet"}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* ✅ Snackbar Notification */}
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose}>
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
+          elevation={6}
+          variant="filled"
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </TableContainer>
   );
 };

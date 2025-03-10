@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import {
   Paper,
   Typography,
@@ -19,7 +19,6 @@ import {
 } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const SubAdminLeave = () => {
   const location = useLocation();

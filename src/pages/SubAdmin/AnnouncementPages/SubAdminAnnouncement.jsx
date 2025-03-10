@@ -10,17 +10,28 @@ import {
   Typography,
   CircularProgress,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
+
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-const UserAnnouncementTable = () => {
+const SubAdminAnnouncementTable = () => {
   const [announcements, setAnnouncements] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
+      setLoading(true);
+      setSnackbarOpen(true);
+
       const adminEmail = localStorage.getItem("email");
       const authToken = localStorage.getItem("token");
       const apiUrl =
@@ -29,23 +40,21 @@ const UserAnnouncementTable = () => {
       if (!adminEmail || !authToken) {
         setError("User email or authentication token is missing.");
         setLoading(false);
+        setSnackbarOpen(false);
         return;
       }
 
       try {
         const response = await axios.get(apiUrl, {
-          params: {
-            adminEmail,
-          },
-          headers: {
-            Authorization: authToken,
-          },
+          params: { adminEmail },
+          headers: { Authorization: authToken },
         });
         setAnnouncements(response.data);
       } catch {
         setError("Failed to fetch announcements. Please try again later.");
       } finally {
         setLoading(false);
+        setSnackbarOpen(false);
       }
     };
 
@@ -53,27 +62,25 @@ const UserAnnouncementTable = () => {
   }, []);
 
   const toggleReadStatus = async (id, currentStatus) => {
+    setLoading(true);
+    setSnackbarOpen(true);
+
     const adminEmail = localStorage.getItem("email");
     const authToken = localStorage.getItem("token");
     const apiUrl = `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/notification/${id}/read`;
 
     if (!adminEmail || !authToken) {
-      alert("User email or authentication token is missing.");
+      setLoading(false);
+      setSnackbarOpen(false);
       return;
     }
 
     try {
-      // Toggle the read status by sending the adminEmail as a query parameter
       await axios.patch(apiUrl, null, {
-        params: {
-          adminEmail,
-          // Pass adminEmail as a query parameter
-        },
-        headers: {
-          Authorization: authToken,
-        },
+        params: { adminEmail },
+        headers: { Authorization: authToken },
       });
-      // Update the local state to reflect the change
+
       setAnnouncements((prev) =>
         prev.map((announcement) =>
           announcement.id === id
@@ -82,18 +89,27 @@ const UserAnnouncementTable = () => {
         )
       );
     } catch {
-      alert("Failed to update read status. Please try again.");
+      setSnackbarOpen(true);
+    } finally {
+      setLoading(false);
+      setSnackbarOpen(false);
     }
   };
 
   if (loading) {
     return (
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <CircularProgress />
-        <Typography variant="h6" sx={{ marginTop: 2 }}>
-          Loading Announcements...
-        </Typography>
-      </div>
+      <>
+        <Snackbar
+          open={snackbarOpen}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: "100%" }}>
+            Loading...
+          </Alert>
+        </Snackbar>
+       
+      </>
     );
   }
 
@@ -106,31 +122,18 @@ const UserAnnouncementTable = () => {
   }
 
   return (
-    <TableContainer component={Paper}>
-      <Typography
-        variant="h5"
-        sx={{ padding: 2, backgroundColor: "#0D1B2A", color: "#E0F2F1" }}
-      >
+    <TableContainer component={Paper} sx={{ padding: "20px" }}>
+      <Typography variant="h4" sx={{ marginBottom: 2 }}>
         Sub-admin Announcements
       </Typography>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Title
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Description
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Date
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Read Status
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "bold" }}>
-              Action
-            </TableCell>
+            <TableCell align="left" sx={{ fontWeight: "bold" }}>Title</TableCell>
+            <TableCell align="left" sx={{ fontWeight: "bold" }}>Description</TableCell>
+            <TableCell align="left" sx={{ fontWeight: "bold" }}>Date</TableCell>
+            <TableCell align="left" sx={{ fontWeight: "bold" }}>Read Status</TableCell>
+            <TableCell align="left" sx={{ fontWeight: "bold" }}>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -148,9 +151,7 @@ const UserAnnouncementTable = () => {
                 <Button
                   variant="contained"
                   color={announcement.read ? "default" : "primary"}
-                  onClick={() =>
-                    toggleReadStatus(announcement.id, announcement.read)
-                  }
+                  onClick={() => toggleReadStatus(announcement.id, announcement.read)}
                 >
                   {announcement.read ? "Mark as Unread" : "Mark as Read"}
                 </Button>
@@ -159,8 +160,20 @@ const UserAnnouncementTable = () => {
           ))}
         </TableBody>
       </Table>
+
+      {/* Snackbar Notification */}
+      <Snackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: "100%" }}>
+          Action Completed!
+        </Alert>
+      </Snackbar>
     </TableContainer>
   );
 };
 
-export default UserAnnouncementTable;
+export default SubAdminAnnouncementTable;

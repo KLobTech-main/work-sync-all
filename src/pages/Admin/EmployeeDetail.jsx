@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import {
   Paper,
   Table,
@@ -71,7 +71,7 @@ const EmployeeDetails = () => {
     };
 
     fetchEmployees();
-  }, []);
+  }, [response]);
 
   const handleClick = (event, employee) => {
     setAnchorEl(event.currentTarget);
