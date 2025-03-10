@@ -22,8 +22,8 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const SubAdminAttendance = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const email = queryParams.get('email'); // Get employee email from query parameter
-  const adminEmail = localStorage.getItem('email'); // Get admin email from localStorage
+  const email = queryParams.get('email');
+  const adminEmail = localStorage.getItem('email'); 
   const token = localStorage.getItem('token'); // Get token from localStorage
 
   const [attendanceData, setAttendanceData] = useState([]);
@@ -46,7 +46,7 @@ const SubAdminAttendance = () => {
         setLoading(true);
         setSnackbarOpen(true);
         const response = await axios.get(
-          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/attendance/${email}`,
+          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/sub-admin/api/attendance/${email}`,
           {
             headers: {
               Authorization: token,

@@ -71,7 +71,7 @@ const EmployeeDetails = () => {
     };
 
     fetchEmployees();
-  }, [response]);
+  }, []);
 
   const handleClick = (event, employee) => {
     setAnchorEl(event.currentTarget);
