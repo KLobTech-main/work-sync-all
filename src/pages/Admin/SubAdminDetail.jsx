@@ -93,7 +93,7 @@ const SubAdminDetails = () => {
   
       const requestBody = {
         adminEmail: adminEmail,
-        email: subAdmin.subAdminAssignedUserEmail,
+        subAdminEmail: subAdmin.subAdminAssignedUserEmail,
         approvedByAdmin: updatedStatus,
       };
   
