@@ -53,11 +53,12 @@ const Sidebar = () => {
   return (
     <div
       style={{
-        width: 240,
+        minWidth: 240,
         backgroundColor: "#0D1B2A",
         color: "#E0F2F1",
-        height: "100vh",
+        minHeight: "100vh",
         paddingTop: "16px",
+
       }}
     >
       <div style={{ textAlign: "center", padding: "16px" }}>

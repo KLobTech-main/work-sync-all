@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -15,20 +15,62 @@ import {
   InputLabel,
   TextField,
   InputAdornment,
+  TablePagination,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import SearchIcon from "@mui/icons-material/Search";
 
 const LeaveCancel = () => {
   const [search, setSearch] = useState("");
+  const [emailSearch, setEmailSearch] = useState("");
+  const [leaveTypeFilter, setLeaveTypeFilter] = useState("All"); // ✅ Leave Type Dropdown
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
+  const [leaves, setLeaves] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [noRequests, setNoRequests] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage] = useState(10); // ✅ Show 10 records per page
 
-  // ✅ Dummy Leave Requests Data
-  const [leaves, setLeaves] = useState([
-    { id: 1, name: "John Doe", email: "john@example.com", leaveType: "Sick Leave", date: "2025-03-10", status: "Pending" },
-    { id: 2, name: "Alice Smith", email: "alice@example.com", leaveType: "Casual Leave", date: "2025-03-12", status: "Pending" },
-    { id: 3, name: "Michael Brown", email: "michael@example.com", leaveType: "Annual Leave", date: "2025-03-15", status: "Pending" },
-  ]);
+  useEffect(() => {
+    const fetchLeaveRequests = async () => {
+      try {
+        const adminEmail = localStorage.getItem("email");
+        const token = localStorage.getItem("token");
+
+        if (!adminEmail || !token) {
+          console.error("Admin email or token is missing");
+          return;
+        }
+
+        const apiUrl = `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/api/leaves/all-leaves-cancel-request?adminEmail=${encodeURIComponent(adminEmail)}`;
+
+        const response = await fetch(apiUrl, {
+          method: "GET",
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.status === 204) {
+          setNoRequests(true);
+          setLeaves([]);
+        } else if (response.ok) {
+          const data = await response.json();
+          setLeaves(data);
+          setNoRequests(false);
+        } else {
+          console.error("Failed to fetch leave requests");
+        }
+      } catch (error) {
+        console.error("Error fetching leave requests:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeaveRequests();
+  }, []);
 
   // ✅ Handle Leave Status Change
   const handleStatusChange = (leaveId, newStatus) => {
@@ -41,49 +83,77 @@ const LeaveCancel = () => {
     setSnackbar({ open: true, message: `Leave ${newStatus}!`, severity: "success" });
   };
 
-  // ✅ Filtered Leave Requests Based on Search
+  // ✅ Filter Leave Requests Based on Search and Leave Type
   const filteredLeaves = leaves.filter(({ name, email, leaveType }) =>
-    `${name} ${email} ${leaveType}`.toLowerCase().includes(search.toLowerCase())
+    `${name}`.toLowerCase().includes(search.toLowerCase()) &&
+    email.toLowerCase().includes(emailSearch.toLowerCase()) &&
+    (leaveTypeFilter === "All" || leaveType === leaveTypeFilter)
   );
 
+  // ✅ Pagination - Get data for current page
+  const paginatedLeaves = filteredLeaves.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+
   return (
-    <div style={{ padding: "20px"}}>
-        <div className="flex flex-row justify-between">
+    <div style={{ padding: "20px" }}>
+      <div className="flex flex-row justify-between">
+        <Typography variant="h4" align="center" gutterBottom>
+          Leave Requests
+        </Typography>
 
-      <Typography variant="h4" align="center" gutterBottom>
-        Leave Requests
-      </Typography>
-
-      {/* ✅ Search Bar */}
-      <TextField
-        fullWidth
-        size="small"
-        label="Search by name, email, or leave type"
-        variant="outlined"
-        sx={{width:"300px"}}
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        InputProps={{
-            startAdornment: (
+        {/* ✅ Search & Filters */}
+        <div className="flex gap-4">
+          {/* Search by Name */}
+          <TextField
+            fullWidth
+            size="small"
+            label="Search by name"
+            variant="outlined"
+            sx={{ width: "200px" }}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
                 <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-        style={{ marginBottom: "15px" }}
-        />
-         </div>
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
 
-      {/* ✅ Show No Leave Requests Message */}
-      {filteredLeaves.length === 0 && (
-          <Typography align="center" style={{ marginTop: "20px" }}>
-          No matching leave requests found.
+          {/* Search by Email */}
+          
+
+          {/* ✅ Leave Type Dropdown Filter */}
+          <FormControl size="small" sx={{ minWidth: 200 }}>
+            <InputLabel>Leave Type</InputLabel>
+            <Select
+              value={leaveTypeFilter}
+              onChange={(e) => setLeaveTypeFilter(e.target.value)}
+              label="Leave Type"
+            >
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Annual Leave">Annual Leave</MenuItem>
+              <MenuItem value="Sick">Sick</MenuItem>
+              <MenuItem value="Paternity">Paternity</MenuItem>
+              <MenuItem value="Casual">Casual</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      </div>
+
+      {/* ✅ Show Loading Message */}
+      {loading && <Typography align="center">Loading leave requests...</Typography>}
+
+      {/* ✅ Show "No Leave Cancel Request" Message if API returns 204 */}
+      {!loading && noRequests && (
+        <Typography align="center" style={{ marginTop: "20px" }}>
+          No leave cancel request.
         </Typography>
       )}
 
-      {/* ✅ Leave Requests Table */}
-      {filteredLeaves.length > 0 && (
-          <Paper elevation={3} style={{ marginTop: "10px", padding: "10px" }}>
+      {/* ✅ Show Leave Requests Table if Data is Available */}
+      {!loading && !noRequests && filteredLeaves.length > 0 && (
+        <Paper elevation={3} style={{ marginTop: "10px", padding: "10px" }}>
           <TableContainer>
             <Table>
               <TableHead>
@@ -97,8 +167,8 @@ const LeaveCancel = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredLeaves.map(({ id, name, email, leaveType, date, status }) => (
-                    <TableRow key={id}>
+                {paginatedLeaves.map(({ id, name, email, leaveType, date, status }) => (
+                  <TableRow key={id}>
                     <TableCell>{name}</TableCell>
                     <TableCell>{email}</TableCell>
                     <TableCell>{leaveType}</TableCell>
@@ -106,12 +176,11 @@ const LeaveCancel = () => {
                     <TableCell>{status}</TableCell>
                     <TableCell>
                       <FormControl fullWidth size="small">
-                       
                         <Select
                           value={status}
                           onChange={(e) => handleStatusChange(id, e.target.value)}
                           disabled={status !== "Pending"} // ✅ Disable if already Accepted/Rejected
-                          >
+                        >
                           <MenuItem value="Pending">Pending</MenuItem>
                           <MenuItem value="Accepted">Accepted</MenuItem>
                           <MenuItem value="Rejected">Rejected</MenuItem>
@@ -124,25 +193,18 @@ const LeaveCancel = () => {
               </TableBody>
             </Table>
           </TableContainer>
+
+          {/* ✅ Pagination */}
+          <TablePagination
+            component="div"
+            count={filteredLeaves.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={(_, newPage) => setPage(newPage)}
+            rowsPerPageOptions={[10]}
+          />
         </Paper>
       )}
-     
-
-      {/* ✅ Snackbar for Notifications */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      >
-        <MuiAlert
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-          severity={snackbar.severity}
-          elevation={6}
-          variant="filled"
-        >
-          {snackbar.message}
-        </MuiAlert>
-      </Snackbar>
     </div>
   );
 };
