@@ -42,10 +42,10 @@ const Task = () => {
   const handleCreateTask = async () => {
     try {
       const token = localStorage.getItem("token");
-      const adminEmail = localStorage.getItem("email");
+      const subAdminEmail = localStorage.getItem("email");
       const response = await axios.post(
-        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/api/tasks/create-task?adminEmail=${adminEmail}`,
-        { ...newTask, assignedBy: adminEmail },
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/api/tasks/create-task?subAdminEmail=${subAdminEmail}`,
+        { ...newTask, assignedBy: subAdminEmail },
         { headers: { Authorization: token } }
       );
       setTasks([...tasks, response.data]);
