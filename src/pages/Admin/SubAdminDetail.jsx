@@ -24,6 +24,7 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import CreateSubadmin from './CreateSubadmin';
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const SubAdminDetails = () => {
@@ -191,13 +192,17 @@ const SubAdminDetails = () => {
         <Typography variant="h4" gutterBottom>
           Sub Admin Details
         </Typography>
+        <div className='flex items-center gap-3'> 
+
+        <CreateSubadmin />
         <TextField
           label="Search"
           variant="outlined"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{ width: '400px' }}
-        />
+          />
+          </div>
       </Box>
       <Paper elevation={3}>
         <TableContainer>
