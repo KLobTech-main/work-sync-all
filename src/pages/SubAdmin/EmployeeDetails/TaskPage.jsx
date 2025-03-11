@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import dayjs from "dayjs"; // Import dayjs for formatting dates
+
 import {
   Paper,
   Table,
@@ -37,9 +39,7 @@ const TaskPage = () => {
 
       const adminEmail = localStorage.getItem("email");
       const authToken = localStorage.getItem("token");
-      const employeeEmail = employee.email;
-      const apiUrl = `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/tasks/get/email`;
-
+      const employeeEmail = employee.email; 
       if (!adminEmail || !authToken || !employeeEmail) {
         setError(
           "User email, authentication token, or employee email is missing."
@@ -49,11 +49,8 @@ const TaskPage = () => {
       }
 
       try {
-        const response = await axios.get(apiUrl, {
-          params: {
-            adminEmail,
-            email: employeeEmail,
-          },
+        const response = await axios.get(`https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin-sub/api/tasks/givenTasks?subAdminEmail=${adminEmail}&assignedTo=${employeeEmail}`, {
+         
           headers: {
             Authorization: authToken,
           },
@@ -169,30 +166,34 @@ const TaskPage = () => {
               <TableRow>
                 <TableCell>Task ID</TableCell>
                 <TableCell>Name</TableCell>
-                {/* <TableCell>Email</TableCell> */}
+                <TableCell>Created At</TableCell>
+                <TableCell>Deadline</TableCell>
                 <TableCell>Task Description</TableCell>
                 <TableCell>Status</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {filteredTasks.length > 0 ? (
-                filteredTasks.map((task) => (
-                  <TableRow key={task.id}>
-                    <TableCell>{task.id}</TableCell>
-                    <TableCell>{task.name}</TableCell>
-                    {/* <TableCell>{task.email}</TableCell> */}
-                    <TableCell>{task.task}</TableCell>
-                    <TableCell>{task.status}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    No tasks match the filters.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
+         
+<TableBody>
+  {filteredTasks.length > 0 ? (
+    filteredTasks.map((task) => (
+      <TableRow key={task.id}>
+        <TableCell>{task.id}</TableCell>
+        <TableCell>{task.name}</TableCell>
+        <TableCell>{dayjs(task.createdAt).format("YYYY-MM-DD HH:mm A")}</TableCell> 
+        <TableCell>{dayjs(task.deadLine).format("YYYY-MM-DD")}</TableCell>
+        <TableCell>{task.description}</TableCell>
+        <TableCell>{task.status}</TableCell>
+      </TableRow>
+    ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={5} align="center">
+        No tasks match the filters.
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
           </Table>
         </TableContainer>
       </Paper>

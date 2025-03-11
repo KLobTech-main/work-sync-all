@@ -64,11 +64,11 @@ import SubAdminAssests from "./pages/SubAdmin/Assets.jsx";
 import SubAdminEmployeeDetails from "./pages/SubAdmin/EmployeeDetail.jsx";
 import SubAdminFeedBack from "./pages/SubAdmin/Feedback.jsx";
 import SubAdminJobHistoryForm from "./pages/SubAdmin/JobHistoryForm.jsx";
-import SubAdminUserLeave from "./pages/SubAdmin/Leave.jsx";
+import SubAdminUserLeave from "./pages/SubAdmin/EmployeeDetails/Leave.jsx";
 import SubAdminLeaveUserRequest from "./pages/SubAdmin/LeaveRequest.jsx";
-// import SubAdminAttendancePage from "./pages/SubAdmin/EmployeeDetails/AttendancePage.jsx";
+import SubAdminAttendancePage from "./pages/SubAdmin/EmployeeDetails/AttendancePage.jsx";
 // import SubAdminLeavePage from "./pages/SubAdmin/EmployeeDetails/LeavePage.jsx";
-// import SubAdminTaskPage from "./pages/SubAdmin/EmployeeDetails/TaskPage.jsx";
+import SubAdminTaskPage from "./pages/SubAdmin/EmployeeDetails/TaskPage.jsx";
 // import SubAdminCreateAnnouncementForm from "./pages/SubAdmin/AnnouncementPages/CreateAnnouncement.jsx";
 import SubAdminAnnouncement from "./pages/SubAdmin/AnnouncementPages/SubAdminAnnouncement.jsx";
 import SubAdminUserAnnouncement from "./pages/SubAdmin/AnnouncementPages/UserAnnouncement.jsx";
@@ -309,11 +309,11 @@ const SubAdminPrivateRoute = ({ element }) => {
             />
             <Route
               path="/subadmin/employee/:id/task"
-              element={<SubAdminPrivateRoute element={<SubAdminTask />} />}
+              element={<SubAdminPrivateRoute element={<SubAdminTaskPage />} />}
             />
             <Route
               path="/subadmin/employee/:id/attendance"
-              element={<SubAdminPrivateRoute element={<SubAdminAttendance />} />}
+              element={<SubAdminPrivateRoute element={<SubAdminAttendancePage />} />}
             />
             <Route
               path="/subadmin/dashboard"
