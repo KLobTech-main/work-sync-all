@@ -18,7 +18,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import Profile from '../../../components/Layout/EmployeeLayout/Profile';
 import InnerSidbar from '../../../components/Layout/EmployeeLayout/InnerSidbar';
 import axios from 'axios';
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Assets() {
   const [assets, setAssets] = useState([]); 
@@ -37,12 +36,12 @@ function Assets() {
           `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/assets/?email=${email}`,
           {
             headers: { Authorization: token },
-     
           }
         );
-        setAssets(response.data); 
+        // ✅ Fix: Ensure `assets` is an array
+        setAssets(response.data.data || []);
       } catch (err) {
-        setError('Failed to fetch assets. Please try again later.',err);
+        setError('Failed to fetch assets. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -53,7 +52,7 @@ function Assets() {
 
   const filteredAssets = assets.filter((asset) =>
     Object.values(asset).some((value) =>
-      value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      value?.toString().toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 
@@ -68,7 +67,7 @@ function Assets() {
             Assets
           </Typography>
 
-          <Grid container spacing={2} sx={{ Width:'100%',marginBottom: '20px' }}>
+          <Grid container spacing={2} sx={{ Width:'100%', marginBottom: '20px' }}>
             <Grid item xs={12} sm={6}>
               <TextField
                 variant="outlined"
@@ -95,6 +94,15 @@ function Assets() {
             <Typography color="error" sx={{ textAlign: 'center', marginTop: '20px' }}>
               {error}
             </Typography>
+          ) : assets.length === 0 ? ( 
+            // ✅ Display a message when no assets are found
+            <Box sx={{ textAlign: 'center', padding: '20px' }}>
+             
+              <Typography variant="body1" sx={{ color: '#777', fontWeight: 'bold', marginBottom: '10px' }}>
+                No Assets Available
+              </Typography>
+             
+            </Box>
           ) : (
             <Paper
               elevation={3}
@@ -119,59 +127,17 @@ function Assets() {
                   </TableHead>
 
                   <TableBody>
-
-                  {filteredAssets.length > 0 ? (
-  filteredAssets.map((asset, index) => (
-    <TableRow key={index}>
-      <TableCell>{asset.assetName || 'N/A'}</TableCell>
-      <TableCell>{asset.assetCode || 'N/A'}</TableCell>
-      <TableCell>{asset.serialNo || 'N/A'}</TableCell>
-      <TableCell>{asset.isWorking ? 'Yes' : 'No'}</TableCell>
-      <TableCell>{asset.type || 'N/A'}</TableCell>
-      <TableCell>{asset.date || 'N/A'}</TableCell>
-      <TableCell>{asset.note || 'N/A'}</TableCell>
-    </TableRow>
-  ))
-) : (
-  <TableRow>
-    <TableCell colSpan={7} align="center">
-      No assets found.
-    </TableCell>
-  </TableRow>
-)}
-
-
-                    {filteredAssets.length > 0 ? (
-                      filteredAssets.map((asset, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{asset.assetName}</TableCell>
-                          <TableCell>{asset.assetCode}</TableCell>
-                          <TableCell>{asset.serialNo}</TableCell>
-                          <TableCell>{asset.isWorking}</TableCell>
-                          <TableCell>{asset.type}</TableCell>
-                          <TableCell>{asset.date}</TableCell>
-                          <TableCell>{asset.note}</TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={7} align="center">
-                          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
-                            <img
-                              src="https://via.placeholder.com/80"
-                              alt="No Data"
-                              style={{ marginBottom: '10px' }}
-                            />
-                            <Typography variant="body1" sx={{ color: '#777', fontWeight: 'bold', marginBottom: '10px' }}>
-                              Nothing to show here
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: '#777' }}>
-                              Please add a new entity or manage the data table to see the content here.
-                            </Typography>
-                          </Box>
-                        </TableCell>
+                    {filteredAssets.map((asset, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{asset.assetName}</TableCell>
+                        <TableCell>{asset.assetCode}</TableCell>
+                        <TableCell>{asset.serialNo}</TableCell>
+                        <TableCell>{asset.isWorking}</TableCell>
+                        <TableCell>{asset.type}</TableCell>
+                        <TableCell>{asset.date}</TableCell>
+                        <TableCell>{asset.note}</TableCell>
                       </TableRow>
-                    )}
+                    ))}
                   </TableBody>
                 </Table>
               </TableContainer>

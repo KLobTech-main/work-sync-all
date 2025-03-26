@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
-  TextField,
-  Button,
+  Typography,
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -10,58 +10,53 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Typography,
-  Box,
-  Grid,
   Link,
-  MenuItem,
-  Select,
-  Checkbox,
-  ListItemText,
   Snackbar,
-  IconButton,
+  TextField,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
-import { AddCircleOutline as AddIcon } from "@mui/icons-material";
-import CloseIcon from "@mui/icons-material/Close";
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+import MeetingForm from "./MeetingForm.jsx"
 
 const Meetings = () => {
   const [hostMeetings, setHostMeetings] = useState([]);
   const [participantMeetings, setParticipantMeetings] = useState([]);
-  const [newMeeting, setNewMeeting] = useState({
-    title: "",
-    description: "",
-    date: "",
-    time: "",
-    attendees: [],
-    meetingLink: "",
-    meetingMode: "Online", 
-  });
+  const [filteredMeetings, setFilteredMeetings] = useState([]);
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchDate, setSearchDate] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [employees, setEmployees] = useState([]);
-  const [attendees, setAttendees] = useState([]);
-  const [openSnackbar, setOpenSnackbar] = useState(false); 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openRescheduleDialog, setOpenRescheduleDialog] = useState(false);
+  const [selectedMeeting, setSelectedMeeting] = useState(null);
+  const [newTime, setNewTime] = useState("");
 
   const email = localStorage.getItem("email");
   const token = localStorage.getItem("jwtToken");
-
   const apiBaseUrl =
     "https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/meetings";
-  const usersApiUrl =
-    `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/users/get-all-users-name-email?email=${email} `;
+
+  useEffect(() => {
+    fetchMeetings();
+  }, [email, token]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [searchTitle, searchDate, participantMeetings]);
 
   const fetchMeetings = async () => {
     if (!email || !token) {
       setError("Authentication information is missing.");
-      setOpenSnackbar(true); 
+      setOpenSnackbar(true);
       setLoading(false);
       return;
     }
 
     try {
-      const hostResponse = await axios.get(`${apiBaseUrl}/get-all`, {
-        params: { email },
+      const hostResponse = await axios.get(apiBaseUrl, {
         headers: { Authorization: token },
       });
       setHostMeetings(hostResponse.data);
@@ -74,103 +69,52 @@ const Meetings = () => {
         }
       );
       setParticipantMeetings(participantResponse.data);
-
-      const usersResponse = await axios.get(usersApiUrl, {
-        params: { email: email },
-        headers: { Authorization: token },
-      });
-      setEmployees(usersResponse.data);
-      setAttendees([email]); 
+      setFilteredMeetings(participantResponse.data);
     } catch (err) {
       setError(err.message);
-      setOpenSnackbar(true); 
+      setOpenSnackbar(true);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchMeetings();
-  }, [email, token]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewMeeting((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  const applyFilters = () => {
+    let filtered = participantMeetings;
+    if (searchTitle) {
+      filtered = filtered.filter((meeting) =>
+        meeting.meetingTitle.toLowerCase().includes(searchTitle.toLowerCase())
+      );
+    }
+    if (searchDate) {
+      filtered = filtered.filter((meeting) => meeting.date === searchDate);
+    }
+    setFilteredMeetings(filtered);
   };
 
-  const handleAttendeesChange = (event) => {
-    const selectedAttendees = event.target.value;
-
-    if (!selectedAttendees.includes(email)) {
-      selectedAttendees.push(email); 
-    }
-
-    setAttendees(selectedAttendees);
-    setNewMeeting((prevState) => ({
-      ...prevState,
-      attendees: selectedAttendees,
-    }));
+  const openReschedule = (meeting) => {
+    setSelectedMeeting(meeting);
+    setOpenRescheduleDialog(true);
   };
 
-  const handleCreateMeeting = async () => {
-    if (!email || !token) {
-      setError("Authentication information is missing.");
-      setOpenSnackbar(true); 
-      return;
-    }
-
-    const { title, description, date, time, meetingLink, meetingMode } =
-      newMeeting;
-
-    if (!title || !description || !date || !time) {
-      setError("All fields are required.");
-      setOpenSnackbar(true); 
-      return;
-    }
-
-    const meetingData = {
-      meetingTitle: title,
-      description,
-      meetingMode,
-      participants: attendees,
-      duration: "1 hour",
-      date,
-      scheduledTime: `${date}T${time}`,
-      meetingLink,
-    };
+  const handleReschedule = async () => {
+    if (!selectedMeeting || !newTime) return;
 
     try {
-      const response = await axios.post(`${apiBaseUrl}`, meetingData, {
-        params: { email },
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
-
+      await axios.put(
+        `${apiBaseUrl}/reschedule`,
+        { meetingId: selectedMeeting.id, newTime },
+        { headers: { Authorization: token } }
+      );
+      setError("Meeting rescheduled successfully!");
+      setOpenSnackbar(true);
       fetchMeetings();
-
-      setNewMeeting({
-        title: "",
-        description: "",
-        date: "",
-        time: "",
-        attendees: [],
-        meetingLink: "",
-        meetingMode: "Online", 
-      });
-      setAttendees([email]); 
     } catch (err) {
       setError(err.message);
-      setOpenSnackbar(true); 
+      setOpenSnackbar(true);
+    } finally {
+      setOpenRescheduleDialog(false);
+      setNewTime("");
     }
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
   };
 
   if (loading) {
@@ -182,123 +126,37 @@ const Meetings = () => {
   }
 
   return (
-    <Box sx={{ padding: "20px", backgroundColor: "#ffffff", minHeight: "100vh" }}>
+    <Box sx={{ padding: "20px", backgroundColor: "#ffffff" }}>
+      
+      <div className="flex justify-between items-center">
+
       <Typography variant="h4" sx={{ marginBottom: "20px" }}>
         Meetings
       </Typography>
 
-      <Box sx={{ marginBottom: "30px" }}>
-        <Typography variant="h6">Create a New Meeting</Typography>
-        <Grid
-          container
-          spacing={2}
-          sx={{
-            backgroundColor: "#fff",
-            padding: "10px",
-            borderRadius: "10px",
-            marginTop: "10px",
-          }}
-        >
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Meeting Title"
-              variant="outlined"
-              fullWidth
-              name="title"
-              value={newMeeting.title}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Date"
-              type="date"
-              variant="outlined"
-              fullWidth
-              name="date"
-              value={newMeeting.date}
-              onChange={handleChange}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Time"
-              type="time"
-              variant="outlined"
-              fullWidth
-              name="time"
-              value={newMeeting.time}
-              onChange={handleChange}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Select
-              label="Attendees"
-              multiple
-              fullWidth
-              value={attendees}
-              onChange={handleAttendeesChange}
-              renderValue={(selected) => selected.join(", ")}
-            >
-              {employees.map((employee) => (
-                <MenuItem key={employee.email} value={employee.email}>
-                  <Checkbox checked={attendees.indexOf(employee.email) > -1} />
-                  <ListItemText primary={employee.email} />
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Description"
-              variant="outlined"
-              fullWidth
-              name="description"
-              value={newMeeting.description}
-              onChange={handleChange}
-              multiline
-              rows={3}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Meeting Link"
-              variant="outlined"
-              fullWidth
-              name="meetingLink"
-              value={newMeeting.meetingLink}
-              onChange={handleChange}
-              helperText="Optional - Enter a meeting link (Zoom, Google Meet, etc.)"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Select
-              label="Meeting Mode"
-              fullWidth
-              name="meetingMode"
-              value={newMeeting.meetingMode}
-              onChange={handleChange}
-            >
-              <MenuItem value="Online">Online</MenuItem>
-              <MenuItem value="Offline">Offline</MenuItem>
-            </Select>
-          </Grid>
-        </Grid>
-        <Button
-          sx={{ marginTop: "20px" }}
-          variant="contained"
-          color="primary"
-          onClick={handleCreateMeeting}
-          startIcon={<AddIcon />}
-        >
-          Create Meeting
-        </Button>
+  
+      <Box sx={{ display: "flex", alignItems:'center', gap: 2, marginBottom: "20px" }}>
+      <MeetingForm/>
+        <TextField
+          label="Search by Title"
+          variant="outlined"
+          fullWidth
+          value={searchTitle}
+          onChange={(e) => setSearchTitle(e.target.value)}
+          />
+        <TextField
+          label="Search by Date"
+          type="date"
+          variant="outlined"
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          value={searchDate}
+          onChange={(e) => setSearchDate(e.target.value)}
+          />
       </Box>
+          </div>
 
-     
-
+      {/* Participant Meetings Table */}
       <Typography variant="h6" sx={{ marginBottom: "20px" }}>
         Meetings You Are Attending
       </Typography>
@@ -307,95 +165,109 @@ const Meetings = () => {
           <TableHead>
             <TableRow>
               <TableCell>Title</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Time</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>Attendees</TableCell>
-              <TableCell>Meeting Link</TableCell>
-              <TableCell>Mode</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {participantMeetings.length > 0 ? (
-              participantMeetings.map((meeting, index) => (
-                <TableRow key={index}>
-                  <TableCell>{meeting.meetingTitle || "Untitled"}</TableCell>
-                  <TableCell>{meeting.date || "N/A"}</TableCell>
-                  <TableCell>{new Date(meeting.scheduledTime || "").toLocaleTimeString()}</TableCell>
-                  <TableCell>{meeting.description || "No description"}</TableCell>
-                  <TableCell>{meeting.participants ? meeting.participants.join(", ") : "No attendees"}</TableCell>
-                  <TableCell>
-                    {meeting.meetingLink ? (
-                      <Link href={meeting.meetingLink} target="_blank" color="primary">
-                        Join Meeting
-                      </Link>
-                    ) : (
-                      "N/A"
-                    )}
-                  </TableCell>
-                  <TableCell>{meeting.meetingMode || "N/A"}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} align="center">
-                  No participant meetings available.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
- <Typography variant="h6" sx={{ marginBottom: "20px" }}>
-        Meetings You Are Hosting
-      </Typography>
-      <TableContainer component={Paper} sx={{ marginBottom: "30px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
+              <TableCell>Participants</TableCell>
               <TableCell>Date</TableCell>
+              
               <TableCell>Time</TableCell>
-              <TableCell>Attendees</TableCell>
               <TableCell>Mode</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Meeting Link</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {hostMeetings.length > 0 ? (
-              hostMeetings.map((meeting, index) => (
-                <TableRow key={index}>
-                  <TableCell>{meeting.date || "N/A"}</TableCell>
-                  <TableCell>{new Date(meeting.scheduledTime || "").toLocaleTimeString()}</TableCell>
-                  <TableCell>{meeting.participants ? meeting.participants.join(", ") : "No attendees"}</TableCell>
-                  <TableCell>{meeting.meetingMode || "N/A"}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} align="center">
-                  No hosted meetings available.
+            {filteredMeetings.map((meeting) => (
+              <TableRow key={meeting.id}>
+                <TableCell>{meeting.meetingTitle}</TableCell>
+
+                <TableCell>{meeting.description}</TableCell>
+                <TableCell>{meeting.participants.join(", ")}</TableCell>
+                <TableCell>{meeting.date}</TableCell>
+                <TableCell>
+                  {new Date(meeting.scheduledTime).toLocaleTimeString()}
+                </TableCell>
+                <TableCell>{meeting.meetingMode}</TableCell>
+                <TableCell>{meeting.status}</TableCell>
+                <TableCell>
+                  {meeting.meetingLink ? (
+                    <Link href={meeting.meetingLink} target="_blank">
+                      Join
+                    </Link>
+                  ) : (
+                    "N/A"
+                  )}
+                </TableCell>
+                <TableCell>
+                  {meeting.participants[0] === email && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => openReschedule(meeting)}
+                    >
+                      Reschedule
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message={error}
-        action={
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleCloseSnackbar}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-      />
+      {/* Host Meetings Table */}
+      <Typography variant="h6" sx={{ marginBottom: "20px", marginTop: "30px" }}>
+        All Meetings
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Time</TableCell>
+              <TableCell>Participants</TableCell>
+              <TableCell>Mode</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {hostMeetings.map((meeting) => (
+              <TableRow key={meeting.id}>
+                <TableCell>{meeting.meetingTitle}</TableCell>
+                <TableCell>{meeting.date}</TableCell>
+                <TableCell>
+                  {new Date(meeting.scheduledTime).toLocaleTimeString()}
+                </TableCell>
+                <TableCell>{meeting.participants.join(", ")}</TableCell>
+                <TableCell>{meeting.meetingMode}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* Reschedule Dialog */}
+      <Dialog open={openRescheduleDialog} onClose={() => setOpenRescheduleDialog(false)}>
+        <DialogTitle>Reschedule Meeting</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="New Time"
+            type="datetime-local"
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            value={newTime}
+            onChange={(e) => setNewTime(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenRescheduleDialog(false)}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={handleReschedule}>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)} message={error} />
     </Box>
   );
 };

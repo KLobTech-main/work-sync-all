@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Avatar, CircularProgress, Button } from '@mui/material';
-import { LightMode, DarkMode, Notifications, Language } from '@mui/icons-material';
+import { AppBar, Toolbar, Typography, IconButton,Menu, Avatar, CircularProgress, Button } from '@mui/material';
+import { LightMode, DarkMode } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // To handle redirect after logout
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Navbar = ({ darkMode, setDarkMode }) => {
   const [userData, setUserData] = useState(null);
@@ -12,6 +11,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
 
   const token = localStorage.getItem('jwtToken');
   const email = localStorage.getItem('email');
+  
   const navigate = useNavigate(); // Hook to navigate to other pages
 
   useEffect(() => {
@@ -36,6 +36,13 @@ const Navbar = ({ darkMode, setDarkMode }) => {
         setLoading(false);
       });
   }, [email, token]);
+
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem('userName',(userData.name));
+      localStorage.setItem('userData', JSON.stringify(userData));
+    }
+  }, [userData]);
 
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
@@ -88,6 +95,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
           transition: 'background-color 0.3s, color 0.3s',
         }}
       >
+         <IconButton color="inherit" onClick={() => setSidebarOpen((prev) => !prev)} sx={{ marginRight: 2 }}>
+          <Menu />
+        </IconButton>
         <Toolbar>
           <Typography
             variant="h6"
@@ -131,12 +141,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
         <IconButton color="inherit" onClick={toggleDarkMode}>
           {darkMode ? <LightMode /> : <DarkMode />}
         </IconButton>
-        <IconButton color="inherit">
-          <Language />
-        </IconButton>
-        <IconButton color="inherit">
-          <Notifications />
-        </IconButton>
+      
         <Avatar
           sx={{
             marginLeft: 2,

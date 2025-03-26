@@ -77,6 +77,8 @@ import SearchDocument from "./pages/SubAdmin/SearchDocument.jsx";
 import LeaveCancel from "./pages/SubAdmin/LeaveCancel.jsx";
 import TaskExtend from "./pages/SubAdmin/TaskExtend.jsx";
 import Payslip from "./pages/SubAdmin/Payslip.jsx";
+import AboutProject from "./pages/Employee/AboutProject.jsx";
+import TodoList from "./pages/Employee/TodoList.jsx";
 // const allowedArea = {
 //   latitude: 26.8718,
 //   longitude: 75.7758,
@@ -522,6 +524,22 @@ const SubAdminPrivateRoute = ({ element }) => {
               element={
                 <PrivateRoute>
                   <LeaveRequestCancel />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/about-project"
+              element={
+                <PrivateRoute>
+                  <AboutProject />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/todo-list"
+              element={
+                <PrivateRoute>
+                  <TodoList />
                 </PrivateRoute>
               }
             />

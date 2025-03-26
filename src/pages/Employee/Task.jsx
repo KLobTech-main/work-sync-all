@@ -1,210 +1,226 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
 import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
   Box,
+  Typography,
+  TableContainer,
+  TableCell,
+  TableRow,
+  Paper,
+  CircularProgress,
   Snackbar,
   Alert,
-  TablePagination,
-  CircularProgress,
-  Typography,
+  Select,
+  MenuItem,
+  Table,
+  TableHead,
+  TableBody,
+  FormControl,
+  InputLabel,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Button,
+  TextField
 } from '@mui/material';
+import axios from 'axios';
 
 const Task = () => {
-  const [tasks, setTasks] = useState([]);
-  const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [selectedTask, setSelectedTask] = useState(null); // For the selected task
-  const [dialogOpen, setDialogOpen] = useState(false); // Dialog state
+  const [allTasks, setAllTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [filter, setFilter] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [deadlineDialogOpen, setDeadlineDialogOpen] = useState(false);
+  const [newDeadline, setNewDeadline] = useState('');
+  const [reason, setReason] = useState('');
+  const token = localStorage.getItem('jwtToken');
+  const email = localStorage.getItem('email');
 
-  // Fetch tasks from API
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        setLoading(true);
-        setSnackbarOpen(true);
-        const adminEmail = localStorage.getItem('email');
-        const token = localStorage.getItem('token');
-        const response = await axios.get(
-          `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/admin/api/tasks/all?adminEmail=${adminEmail}`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-        setTasks(response.data);
-      } catch (err) {
-        setError('Failed to fetch tasks. Please try again.');
-      } finally {
-        setLoading(false);
-        setSnackbarOpen(false);
-      }
-    };
-
     fetchTasks();
   }, []);
 
-  // Handle row click
-  const handleRowClick = (task) => {
-    setSelectedTask(task); // Set selected task
-    setDialogOpen(true); // Open dialog
+  useEffect(() => {
+    if (filter) {
+      setFilteredTasks(allTasks.filter(task => task.status.toLowerCase().includes(filter.toLowerCase())));
+    } else {
+      setFilteredTasks(allTasks);
+    }
+  }, [filter, allTasks]);
+
+  const fetchTasks = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.get(
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/tasks/get-given-tasks`,
+        { headers: { Authorization: token }, params: { assignedTo: email } }
+      );
+      setAllTasks(response.data);
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setAllTasks([]); // No tasks available
+      } else {
+        setError('Failed to fetch tasks. Please try again later.');
+        setSnackbarMessage('Failed to fetch tasks. Please try again later.');
+        setSnackbarOpen(true);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Handle dialog close
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-    setSelectedTask(null); // Clear selected task
+  const handleStatusChange = async (taskId, newStatus) => {
+    try {
+      await axios.patch(
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/tasks/status`,
+        null,
+        { headers: { Authorization: token }, params: { taskId, email, status: newStatus } }
+      );
+      setSnackbarMessage(`Task status updated to ${newStatus}`);
+      setSnackbarOpen(true);
+      setAllTasks(prevTasks => prevTasks.map(task => (task.id === taskId ? { ...task, status: newStatus } : task)));
+    } catch (err) {
+      setSnackbarMessage('Failed to update task status. Please try again.');
+      setSnackbarOpen(true);
+    }
   };
 
-  // Filtered tasks
-  const filteredTasks = tasks.filter(
-    (task) =>
-      task.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const handleDeadlineExtend = async () => {
+    try {
+      await axios.post(
+        `https://work-management-cvdpavakcsa5brfb.canadacentral-01.azurewebsites.net/api/tasks/deadline-extension/request`,
+        null,
+        {
+          headers: { Authorization: token },
+          params: { taskId: selectedTask.id, newDeadline, reason }
+        }
+      );
+      setSnackbarMessage('Deadline extension request sent successfully');
+      setSnackbarOpen(true);
+      setDeadlineDialogOpen(false);
+    } catch (err) {
+      setSnackbarMessage('Failed to request deadline extension');
+      setSnackbarOpen(true);
+    }
+  };
+
+  const openDeadlineDialog = (task) => {
+    setSelectedTask(task);
+    setDeadlineDialogOpen(true);
+  };
+
+  return (
+    <Box sx={{ padding: '20px' }}>
+      <Typography variant="h4" sx={{ marginBottom: '20px' }}>Task Management</Typography>
+      {error && <Typography color="error">{error}</Typography>}
+
+      {/* Snackbar for notifications */}
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity="info">{snackbarMessage}</Alert>
+      </Snackbar>
+
+      {/* Filter Tasks */}
+      <FormControl fullWidth sx={{ marginBottom: '20px' }}>
+        <InputLabel>Filter by Status</InputLabel>
+        <Select value={filter} onChange={e => setFilter(e.target.value)}>
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="On Going">On Going</MenuItem>
+          <MenuItem value="Completed">Completed</MenuItem>
+          <MenuItem value="Pending">Pending</MenuItem>
+          <MenuItem value="Blocked">Blocked</MenuItem>
+          <MenuItem value="On Hold">On Hold</MenuItem>
+        </Select>
+      </FormControl>
+
+      <Typography variant="h6">All Tasks</Typography>
+      <TaskTable tasks={filteredTasks} loading={loading} onStatusChange={handleStatusChange} onExtendDeadline={openDeadlineDialog} />
+
+      {/* Deadline Extend Dialog */}
+      <Dialog open={deadlineDialogOpen} onClose={() => setDeadlineDialogOpen(false)}>
+        <DialogTitle>Request Deadline Extension</DialogTitle>
+        <DialogContent>
+          <TextField fullWidth  type="date" value={newDeadline} onChange={e => setNewDeadline(e.target.value)} />
+          <TextField fullWidth label="Reason" value={reason} onChange={e => setReason(e.target.value)} multiline rows={3} sx={{ mt: 2 }} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeadlineDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleDeadlineExtend} color="primary">Submit</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
+};
 
-  // Handle page and rows per page changes
-  const handleChangePage = (event, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-  if(loading){
-    return(
-      <>
-    <Snackbar
-      open={snackbarOpen}
-      onClose={handleSnackbarClose}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-    >
-      <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
-        Loading
-      </Alert>
-    </Snackbar>
-      </>
-    )
+// Table Component
+const TaskTable = ({ tasks, loading, onStatusChange, onExtendDeadline }) => {
+  if (loading) {
+    return <Box sx={{ textAlign: 'center', margin: '20px' }}><CircularProgress /></Box>;
   }
 
-  if (error) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
-        <Typography variant="h6" color="error">
-          {error}
-        </Typography>
-      </Box>
-    );
+  if (tasks.length === 0) {
+    return <Typography>No tasks available.</Typography>;
   }
 
   return (
-    <div className="p-6">
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
-        <h2 className="text-xl font-bold">Employee Tasks</h2>
-        <Box sx={{ width: '400px' }}>
-          <TextField
-            label="Search by Name or Task"
-            variant="outlined"
-            fullWidth
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </Box>
-      </Box>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Title</TableCell>
+            <TableCell>Description</TableCell>
+            <TableCell>Assigned By</TableCell>
+            <TableCell>Deadline</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {tasks.map(task => (
+            <TableRow key={task.id}>
+              <TableCell>{task.title}</TableCell>
+              <TableCell>{task.description}</TableCell>
+              <TableCell>{task.assignedBy}</TableCell>
+              <TableCell>
+  {task.deadLine 
+    ? new Date(task.deadLine).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      }) 
+    : 'N/A'}
+</TableCell>
 
-      <Paper>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow style={{ backgroundColor: '#f0f0f0' }}>
-                <TableCell style={{ fontWeight: 'bold' }}>ID</TableCell>
-                <TableCell style={{ fontWeight: 'bold' }}>Assigned By</TableCell>
-                <TableCell style={{ fontWeight: 'bold' }}>Assigned To</TableCell>
-                <TableCell style={{ fontWeight: 'bold' }}>Title</TableCell>
-                <TableCell style={{ fontWeight: 'bold' }}>Description</TableCell>
-                <TableCell style={{ fontWeight: 'bold' }}>Deadline</TableCell>
-                <TableCell style={{ fontWeight: 'bold' }}>Status</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredTasks.length > 0 ? (
-                filteredTasks
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((task,index) => (
-                    <TableRow key={task.id} onClick={() => handleRowClick(task)} style={{ cursor: 'pointer' }}>
-                      <TableCell>{index+1}</TableCell>
-                      <TableCell>{task.assignedBy}</TableCell>
-                      <TableCell>{task.assignedTo}</TableCell>
-                      <TableCell>{task.title}</TableCell>
-                      <TableCell>
-                        {task.description.split(' ').slice(0, 5).join(' ')}
-                        {task.description.split(' ').length > 5 && '...'}
-                      </TableCell>
-                      <TableCell>{task.deadLine}</TableCell>
-                      <TableCell>{task.status}</TableCell>
-                    </TableRow>
-                  ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={7} align="center">
-                    No tasks match the search criteria.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+              <TableCell>
+  <Select  sx={{ width: '80%' }}
+    value={task.status} 
+    onChange={e => onStatusChange(task.id, e.target.value)}
+  >
+    <MenuItem value="" disabled>
+      Select Status
+    </MenuItem>
+    <MenuItem  value="Pending">Pending</MenuItem>
+    <MenuItem value="On Going">On Going</MenuItem>
+    <MenuItem value="On Hold">On Hold</MenuItem>
+    <MenuItem value="Completed">Completed</MenuItem>
+    <MenuItem value="Blocked">Blocked</MenuItem>
+  </Select>
+</TableCell>
 
-      <TablePagination
-        rowsPerPageOptions={[10]}
-        component="div"
-        count={filteredTasks.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-
-      {/* Dialog for Task Details */}
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Task Details</DialogTitle>
-        <DialogContent>
-          {selectedTask && (
-            <>
-              <Typography><strong>ID:</strong> {selectedTask.id}</Typography>
-              <Typography><strong>Assigned By:</strong> {selectedTask.assignedBy}</Typography>
-              <Typography><strong>Assigned To:</strong> {selectedTask.assignedTo}</Typography>
-              <Typography><strong>Title:</strong> {selectedTask.title}</Typography>
-              <Typography><strong>Description:</strong> {selectedTask.description}</Typography>
-              <Typography><strong>Deadline:</strong> {selectedTask.deadLine}</Typography>
-              <Typography><strong>Status:</strong> {selectedTask.status}</Typography>
-            </>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+              <TableCell>
+                <Button onClick={() => onExtendDeadline(task)}>Extend Deadline</Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

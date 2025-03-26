@@ -200,6 +200,22 @@ const Sidebar = () => {
             <ListItemText primary="Task" sx={{ color: '#E0F2F1' }} />
           </ListItem>
         </NavLink>
+        <NavLink to="/about-project" className="nav-link">
+          <ListItem button>
+            <ListItemIcon>
+              <JobDeskIcon sx={{ color: '#1E3A8A' }} />
+            </ListItemIcon>
+            <ListItemText primary="Project" sx={{ color: '#E0F2F1' }} />
+          </ListItem>
+        </NavLink>
+        <NavLink to="/todo-list" className="nav-link">
+          <ListItem button>
+            <ListItemIcon>
+              <JobDeskIcon sx={{ color: '#1E3A8A' }} />
+            </ListItemIcon>
+            <ListItemText primary="Todo" sx={{ color: '#E0F2F1' }} />
+          </ListItem>
+        </NavLink>
       </List>
     </Drawer>
   );
